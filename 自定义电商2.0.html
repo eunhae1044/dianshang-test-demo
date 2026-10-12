@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极光商城 - 完整版</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,'Segoe UI',sans-serif}
+        body{background:#f2f4f8;padding:20px}
+        .app{max-width:1400px;margin:0 auto}
+        .auth-card{max-width:450px;margin:10vh auto;background:#fff;border-radius:32px;padding:30px;box-shadow:0 20px 40px rgba(0,0,0,0.1)}
+        .auth-tabs{display:flex;gap:12px;margin-bottom:20px}
+        .auth-tab{padding:10px 20px;border-radius:40px;cursor:pointer;background:#f0f2f5}
+        .auth-tab.active{background:#1e3c72;color:#fff}
+        .auth-form input{width:100%;padding:12px 18px;border-radius:40px;border:1px solid #ddd;margin-bottom:12px}
+        .btn-primary{background:#1e3c72;color:#fff;border:none;padding:12px;border-radius:40px;width:100%;cursor:pointer;font-weight:600}
+        .btn-secondary{background:#eef2ff;color:#1e3c72;border:1px solid #1e3c72}
+        .btn-danger{background:#e53e3e;color:#fff}
+        .btn-success{background:#16a34a;color:#fff}
+        .btn-sm{padding:4px 14px;border-radius:30px;border:none;cursor:pointer;font-size:0.8rem}
+        .btn-sm.btn-primary{background:#1e3c72;color:#fff}
+        .btn-sm.btn-danger{background:#e53e3e;color:#fff}
+        .btn-sm.btn-secondary{background:#eef2ff;color:#1e3c72;border:1px solid #1e3c72}
+        .btn-sm.btn-success{background:#16a34a;color:#fff}
+        .main-nav{background:#fff;border-radius:40px;padding:12px 24px;margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:center;gap:15px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+        .logo h2{background:linear-gradient(135deg,#1e3c72,#2b4c7c);-webkit-background-clip:text;background-clip:text;color:transparent}
+        .search-area{flex:1;display:flex;gap:8px;max-width:400px}
+        .search-area input{flex:1;padding:10px 18px;border-radius:40px;border:1px solid #ddd}
+        .search-area button{background:#1e3c72;color:#fff;border:none;border-radius:40px;padding:0 20px;cursor:pointer}
+        .user-info{display:flex;align-items:center;gap:10px;margin-left:auto}
+        .user-profile{display:flex;align-items:center;gap:6px;cursor:pointer;position:relative;padding:6px 12px;border-radius:40px}
+        .user-profile:hover{background:#f0f2f5}
+        .user-profile .username{font-weight:500;color:#1e3c72}
+        .user-profile .chevron{font-size:0.7rem;color:#888;transition:transform 0.2s;margin-left:2px}
+        .user-profile .chevron.open{transform:rotate(180deg)}
+        .user-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.15);min-width:200px;padding:8px 0;z-index:200;overflow:hidden}
+        .user-dropdown.show{display:block}
+        .user-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#333;text-decoration:none;font-size:0.9rem}
+        .user-dropdown a:hover{background:#f5f7fa}
+        .user-dropdown a i{width:18px;color:#1e3c72}
+        .user-dropdown .divider{height:1px;background:#eee;margin:4px 12px}
+        .auth-btn-container{display:flex;align-items:center}
+        #loginBtn{display:inline-block}
+        .main-layout{display:flex;flex-wrap:wrap;gap:24px}
+        .sidebar{width:240px;background:#fff;border-radius:28px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);height:fit-content}
+        .category-item{padding:10px 16px;border-radius:30px;cursor:pointer;margin:4px 0}
+        .category-item.active,.category-item:hover{background:#eef2ff;color:#1e3c72}
+        .content-area{flex:1;min-width:280px}
+        .right-panels{width:320px;display:flex;flex-direction:column;gap:24px}
+        .banner-container{width:100%;border-radius:24px;overflow:hidden;margin-bottom:24px;position:relative;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+        .banner-slides{display:flex;transition:transform 0.5s ease}
+        .banner-slide{min-width:100%;padding:40px 30px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+        .banner-slide h2{font-size:1.8rem;font-weight:700}
+        .banner-slide p{margin-top:8px;opacity:0.8}
+        .banner-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+        .banner-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5);cursor:pointer}
+        .banner-dot.active{background:#fff}
+        .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+        .product-card{background:#fff;border-radius:24px;padding:16px;cursor:pointer;transition:0.2s;border:1px solid #f0f0f0;position:relative}
+        .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,0.1)}
+        .product-card .favorite-btn{position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#ccc}
+        .product-card .favorite-btn.active{color:#e53e3e}
+        .product-icon{font-size:3rem;color:#1e3c72;text-align:center;margin-bottom:8px}
+        .product-name{font-weight:700;font-size:1rem;margin:6px 0}
+        .product-price{color:#e67e22;font-weight:700;font-size:1.2rem}
+        .product-price .origin{font-size:0.8rem;color:#999;text-decoration:line-through;margin-left:8px;font-weight:400}
+        .product-tag{position:absolute;top:8px;left:8px;background:#e53e3e;color:#fff;padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:700}
+        .add-cart-btn{background:#1e3c72;color:#fff;border:none;width:100%;padding:8px;border-radius:40px;margin-top:8px;cursor:pointer}
+        .add-cart-btn:disabled{background:#aaa;cursor:not-allowed}
+        .product-rating{font-size:0.8rem;color:#f59e0b;margin:4px 0}
+        .no-result{text-align:center;padding:60px 20px;color:#8ba0bc;font-size:1.2rem;width:100%}
+        .cart-card,.orders-card,.tools-card{background:#fff;border-radius:28px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+        .cart-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eee}
+        .cart-item input[type="checkbox"]{margin-right:4px}
+        .cart-item .cart-item-info{flex:1}
+        .cart-item .cart-item-controls{display:flex;gap:6px;align-items:center}
+        .qty-btn{background:#eef2ff;border:none;width:28px;height:28px;border-radius:30px;font-weight:bold;cursor:pointer}
+        .cart-actions{display:flex;justify-content:space-between;margin-top:12px;align-items:center}
+        .order-item{background:#f9fafc;border-radius:20px;padding:14px;margin-bottom:14px;border-left:4px solid #1e3c72}
+        .order-status{display:inline-block;padding:2px 12px;border-radius:20px;font-size:0.7rem;font-weight:bold}
+        .status-pending{background:#fef3c7;color:#92400e}
+        .status-paid{background:#d1fae5;color:#065f46}
+        .status-shipped{background:#dbeafe;color:#1e40af}
+        .status-completed{background:#d9f99d;color:#3f6212}
+        .status-cancelled{background:#fee2e2;color:#991b1b}
+        .status-after_sale{background:#fef3c7;color:#92400e}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000}
+        .modal-content{background:#fff;max-width:620px;width:90%;border-radius:32px;padding:24px;max-height:80vh;overflow-y:auto}
+        .modal-header{display:flex;justify-content:space-between;margin-bottom:16px}
+        .address-item,.coupon-item{border:1px solid #ddd;border-radius:20px;padding:12px;margin:8px 0;cursor:pointer}
+        .address-item.selected,.coupon-item.selected{border-color:#1e3c72;background:#eef2ff}
+        .address-item .addr-actions{display:flex;gap:6px;margin-top:6px}
+        .coupon-item .coupon-tag{background:#1e3c72;color:#fff;border-radius:20px;padding:2px 12px;font-size:0.7rem}
+        .filter-btn{padding:4px 16px;border-radius:30px;border:1px solid #ddd;background:#fff;cursor:pointer}
+        .filter-btn.active{background:#1e3c72;color:#fff;border-color:#1e3c72}
+        .empty-tip{text-align:center;color:#8ba0bc;padding:30px}
+        hr{margin:16px 0}
+        .checkout-summary{background:#f8fafc;border-radius:20px;padding:16px;margin:12px 0}
+        .checkout-summary .line{display:flex;justify-content:space-between;padding:4px 0}
+        .checkout-summary .total{font-weight:700;font-size:1.2rem;color:#1e3c72}
+        .error-msg{color:#e53e3e;font-size:0.9rem;margin:6px 0;padding:6px 12px;background:#fee;border-radius:20px}
+        .tools-card .tool-btn{display:block;width:100%;padding:10px;margin:6px 0;border-radius:40px;border:none;cursor:pointer;font-weight:500}
+        .tools-card .tool-btn.primary{background:#1e3c72;color:#fff}
+        .tools-card .tool-btn.secondary{background:#eef2ff;color:#1e3c72;border:1px solid #1e3c72}
+        .profile-avatar{width:60px;height:60px;border-radius:50%;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#1e3c72;margin:0 auto 12px}
+        .profile-name{text-align:center;font-size:1.2rem;font-weight:600}
+        .profile-section{margin-top:20px}
+        .profile-section h4{font-size:0.9rem;color:#666;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+        .profile-section h4 .add-btn{font-size:0.8rem;background:#eef2ff;padding:2px 12px;border-radius:30px;cursor:pointer}
+        .profile-cart-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:0.9rem}
+        .profile-addr-item{padding:8px 12px;background:#f8fafc;border-radius:12px;margin:4px 0;font-size:0.85rem}
+        .payment-options{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap}
+        .payment-options label{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 14px;border:2px solid #ddd;border-radius:40px}
+        .payment-options label.selected{border-color:#1e3c72;background:#eef2ff}
+        .payment-options label input[type="radio"]{display:none}
+        .bank-card-info{background:#f8fafc;border-radius:16px;padding:12px;margin:8px 0}
+        .coupon-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .coupon-card{border:1px solid #e0e0e0;border-radius:16px;padding:16px;background:#fafafa}
+        .coupon-card .coupon-name{font-weight:700;font-size:1.1rem}
+        .coupon-card .coupon-value{color:#e67e22;font-weight:700}
+        .coupon-card .coupon-meta{font-size:0.75rem;color:#888;margin:4px 0}
+        .coupon-card .btn-claim{width:100%;padding:6px;border-radius:30px;border:none;cursor:pointer;font-weight:500}
+        .coupon-card .btn-claim:disabled{background:#ccc;cursor:not-allowed}
+        .spec-group{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+        .spec-btn{padding:6px 16px;border-radius:30px;border:1px solid #ddd;background:#fff;cursor:pointer}
+        .spec-btn.selected{border-color:#1e3c72;background:#eef2ff}
+        .star-rating{display:flex;gap:4px;font-size:1.5rem;cursor:pointer}
+        .star-rating .star{color:#ddd;transition:0.2s}
+        .star-rating .star.active{color:#f59e0b}
+        .review-item{border-bottom:1px solid #eee;padding:12px 0}
+        .review-item .review-user{font-weight:600}
+        .review-item .review-stars{color:#f59e0b}
+        .review-item .review-text{margin-top:4px}
+        .order-detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+        .msg-icon{position:relative;cursor:pointer;font-size:1.2rem;color:#1e3c72;margin-right:8px}
+        .msg-icon .badge{position:absolute;top:-8px;right:-8px;background:#e53e3e;color:#fff;border-radius:50%;padding:2px 6px;font-size:0.6rem;font-weight:700}
+        .points-display{font-size:0.85rem;color:#1e3c72;margin-left:8px}
+        .member-level{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:600}
+        .member-level.vip0{background:#e5e7eb;color:#4b5563}
+        .member-level.vip1{background:#fef3c7;color:#92400e}
+        .member-level.vip2{background:#d1fae5;color:#065f46}
+        .member-level.vip3{background:#dbeafe;color:#1e40af}
+        .member-level.vip4{background:#f3e8ff;color:#6b21a8}
+        .admin-panel{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f2f4f8;z-index:9999;padding:20px;overflow-y:auto}
+        .admin-panel .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .admin-panel .admin-tabs{display:flex;gap:12px;flex-wrap:wrap}
+        .admin-panel .admin-tab{padding:8px 20px;border-radius:30px;cursor:pointer;background:#fff}
+        .admin-panel .admin-tab.active{background:#1e3c72;color:#fff}
+        .admin-table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden}
+        .admin-table th,.admin-table td{padding:10px 14px;border-bottom:1px solid #eee;text-align:left}
+        .admin-table th{background:#f8fafc;font-weight:600}
+        .admin-table .btn-sm{margin:2px}
+        @media (max-width:1000px){.sidebar{width:100%}.right-panels{width:100%}.coupon-grid{grid-template-columns:1fr}}
+        @media (max-width:600px){.user-info{gap:6px}.user-profile{padding:4px 8px}.user-profile .username{font-size:0.85rem}}
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+    <!-- 登录/注册模态 -->
+    <div id="authPanel" class="auth-card" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;width:90%;max-width:450px;box-shadow:0 30px 60px rgba(0,0,0,0.3)">
+        <div class="auth-tabs"><div class="auth-tab active" data-tab="login">登录</div><div class="auth-tab" data-tab="register">注册</div></div>
+        <div id="loginForm" class="auth-form">
+            <input type="text" id="loginUsername" placeholder="用户名">
+            <input type="password" id="loginPassword" placeholder="密码">
+            <button id="doLoginBtn" class="btn-primary">登录</button>
+            <div id="loginError" style="color:red;margin-top:8px;"></div>
+        </div>
+        <div id="registerForm" class="auth-form" style="display:none;">
+            <input type="text" id="regUsername" placeholder="账号">
+            <input type="password" id="regPassword" placeholder="密码">
+            <input type="password" id="regConfirmPwd" placeholder="确认密码">
+            <button id="doRegisterBtn" class="btn-primary">注册并登录</button>
+            <div id="regError" style="color:red;margin-top:8px;"></div>
+        </div>
+        <div style="text-align:center;font-size:0.8rem;margin-top:16px;">演示: demo / 123456</div>
+        <button id="closeAuthBtn" style="position:absolute;top:10px;right:20px;background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button>
+    </div>
+    <div id="authOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;"></div>
+
+    <!-- 主界面 -->
+    <div id="mainApp" style="display:block;">
+        <div class="main-nav">
+            <div class="logo"><h2><i class="fas fa-store"></i> 极光商城</h2></div>
+            <div class="search-area">
+                <input type="text" id="searchInput" placeholder="搜索商品">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-info">
+                <div class="msg-icon" id="msgIcon" title="消息"><i class="fas fa-bell"></i><span class="badge" id="msgBadge" style="display:none;">0</span></div>
+                <div class="user-profile" id="userProfile">
+                    <i class="fas fa-user-circle" style="font-size:1.3rem;color:#1e3c72;"></i>
+                    <span class="username" id="currentUserSpan">未登录</span>
+                    <span class="points-display" id="pointsDisplay"></span>
+                    <span class="chevron" id="dropdownChevron"><i class="fas fa-chevron-down"></i></span>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" id="profileBtn"><i class="fas fa-user"></i> 个人中心</a>
+                        <a href="#" id="couponCenterBtn"><i class="fas fa-ticket-alt"></i> 领券中心</a>
+                        <a href="#" id="msgCenterBtn"><i class="fas fa-bell"></i> 消息中心</a>
+                        <a href="#" id="adminEntryBtn"><i class="fas fa-cog"></i> 后台管理</a>
+                        <div class="divider"></div>
+                        <a href="#" id="logoutDropdownBtn"><i class="fas fa-sign-out-alt"></i> 退出</a>
+                    </div>
+                </div>
+                <div class="auth-btn-container"><button id="loginBtn" class="btn-sm btn-primary">登录</button></div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <h3><i class="fas fa-list"></i> 商品分类</h3>
+                <ul id="categoryList" style="list-style:none;"></ul>
+                <hr>
+                <button id="showCouponCenterBtn" class="tool-btn primary" style="width:100%;padding:10px;border-radius:40px;border:none;cursor:pointer;background:#1e3c72;color:#fff;font-weight:500;"><i class="fas fa-ticket-alt"></i> 领券中心</button>
+            </div>
+
+            <div class="content-area">
+                <div class="banner-container">
+                    <div class="banner-slides" id="bannerSlides">
+                        <div class="banner-slide" style="background:linear-gradient(135deg,#667eea,#764ba2);"><div><h2>618 年中大促</h2><p>全场满减，优惠券叠加上不封顶</p></div><i class="fas fa-gifts" style="font-size:3rem;"></i></div>
+                        <div class="banner-slide" style="background:linear-gradient(135deg,#f093fb,#f5576c);"><div><h2>新品首发</h2><p>iPhone 15 Pro Max 现货抢购</p></div><i class="fas fa-mobile-alt" style="font-size:3rem;"></i></div>
+                        <div class="banner-slide" style="background:linear-gradient(135deg,#4facfe,#00f2fe);"><div><h2>会员专享</h2><p>注册即送优惠券大礼包</p></div><i class="fas fa-crown" style="font-size:3rem;"></i></div>
+                    </div>
+                    <div class="banner-dots" id="bannerDots"></div>
+                </div>
+                <div id="productGrid" class="product-grid"></div>
+            </div>
+
+            <div class="right-panels">
+                <div class="cart-card">
+                    <h3><i class="fas fa-shopping-cart"></i> 购物车</h3>
+                    <div id="cartContainer"></div>
+                    <div id="cartTotal" style="text-align:right;margin:12px 0;"></div>
+                    <div class="cart-actions">
+                        <label><input type="checkbox" id="cartSelectAll"> 全选</label>
+                        <button id="deleteSelectedBtn" class="btn-sm btn-danger">删除选中</button>
+                    </div>
+                    <button id="checkoutBtn" class="btn-primary" style="margin-top:12px;">去结算</button>
+                </div>
+                <div class="tools-card">
+                    <h3><i class="fas fa-tools"></i> 常用工具</h3>
+                    <button id="showAddressBtn" class="tool-btn primary"><i class="fas fa-map-marker-alt"></i> 收货地址管理</button>
+                    <button id="showCouponBtn" class="tool-btn secondary"><i class="fas fa-ticket-alt"></i> 我的优惠券</button>
+                </div>
+                <div class="orders-card">
+                    <h3><i class="fas fa-truck"></i> 我的订单</h3>
+                    <div id="ordersFilter" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+                        <button data-status="all" class="filter-btn active">全部</button>
+                        <button data-status="pending" class="filter-btn">待付款</button>
+                        <button data-status="paid" class="filter-btn">待发货</button>
+                        <button data-status="shipped" class="filter-btn">待收货</button>
+                        <button data-status="completed" class="filter-btn">已完成</button>
+                        <button data-status="cancelled" class="filter-btn">已取消</button>
+                        <button data-status="after_sale" class="filter-btn">售后中</button>
+                    </div>
+                    <div id="ordersContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人中心 -->
+    <div id="profileModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-user-circle"></i> 个人中心</h3><button id="closeProfileBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div class="profile-avatar"><i class="fas fa-user"></i></div><div class="profile-name" id="profileUserName">用户名</div><div id="profileLevel" style="text-align:center;margin:4px 0;"></div><div id="profilePoints" style="text-align:center;margin:4px 0;font-size:0.9rem;color:#666;">积分: 0</div><hr><div class="profile-section"><h4><i class="fas fa-shopping-cart"></i> 我的购物车</h4><div id="profileCartList"><div class="empty-tip">购物车为空</div></div></div><hr><div class="profile-section"><h4><i class="fas fa-map-marker-alt"></i> 收货地址 <span class="add-btn" id="profileAddAddrBtn"><i class="fas fa-plus"></i> 新增</span></h4><div id="profileAddressList"><div class="empty-tip">暂无地址</div></div></div><hr><div class="profile-section"><h4><i class="fas fa-credit-card"></i> 银行卡 <span class="add-btn" id="profileBindCardBtn"><i class="fas fa-plus"></i> 绑定</span></h4><div id="profileBankCardInfo"><div class="empty-tip">未绑定银行卡</div></div></div><hr><div class="profile-section"><h4><i class="fas fa-ticket-alt"></i> 我的优惠券</h4><div id="profileCouponList"><div class="empty-tip">暂无优惠券</div></div></div><hr><div class="profile-section"><h4><i class="fas fa-heart"></i> 我的收藏</h4><div id="profileFavoritesList"><div class="empty-tip">暂无收藏</div></div></div><button id="profileCloseBtn" class="btn-primary" style="margin-top:16px;">关闭</button></div></div>
+
+    <!-- 领券中心 -->
+    <div id="couponCenterModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-gift"></i> 领券中心</h3><button id="closeCouponCenterBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div id="couponCenterList" class="coupon-grid"></div></div></div>
+
+    <!-- 消息中心 -->
+    <div id="msgCenterModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fas fa-bell"></i> 消息中心</h3><button id="closeMsgCenterBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div id="msgList"></div></div></div>
+
+    <!-- 商品详情 -->
+    <div id="productModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="modalProductName"></h3><button id="closeModalBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div id="modalProductDesc"></div><div class="product-price" id="modalProductPrice"></div><div id="modalSpecs"></div><div style="margin:15px 0;"><label>数量: </label><button id="modalDecQty">-</button><span id="modalQty">1</span><button id="modalIncQty">+</button><span style="margin-left:20px;">库存: <span id="modalStock"></span></span></div><button id="modalAddToCart" class="btn-primary">加入购物车</button><button id="modalFavoriteBtn" class="btn-secondary" style="margin-top:8px;width:100%;"><i class="fas fa-heart"></i> 收藏</button><hr><h4>商品评价</h4><div id="modalReviews"></div><div id="modalWriteReview" style="margin-top:12px;display:none;"><button id="modalWriteReviewBtn" class="btn-primary">写评价</button></div></div></div>
+
+    <!-- 地址管理 -->
+    <div id="addressModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="addressModalTitle">收货地址管理</h3><button id="closeAddressBtn" style="background:none;border:none;font-size:1.8rem;">&times;</button></div><div id="addressList"></div><hr><div id="addrError" class="error-msg" style="display:none;"></div><input type="text" id="newAddressName" placeholder="姓名" style="width:100%;padding:10px;margin-bottom:8px;border-radius:30px;border:1px solid #ddd;"><input type="text" id="newAddressPhone" placeholder="手机号" style="width:100%;padding:10px;margin-bottom:8px;border-radius:30px;border:1px solid #ddd;"><input type="text" id="newAddressDetail" placeholder="地址" style="width:100%;padding:10px;margin-bottom:8px;border-radius:30px;border:1px solid #ddd;"><button id="addAddressBtn" class="btn-primary">保存地址</button><button id="cancelEditAddressBtn" class="btn-secondary" style="display:none;margin-top:8px;">取消编辑</button></div></div>
+
+    <!-- 支付 -->
+    <div id="paymentModal" class="modal"><div class="modal-content"><h3>确认支付</h3><div id="paymentInfo" style="margin:20px 0;"></div><div style="display:flex;gap:12px;"><button id="paySuccessBtn" class="btn-primary" style="flex:1;">模拟支付成功</button><button id="payFailBtn" class="btn-danger" style="flex:1;">支付失败</button></div><button id="cancelPayBtn" style="margin-top:12px;background:none;border:none;color:#888;cursor:pointer;">取消支付</button></div></div>
+
+    <!-- 确认对话框 -->
+    <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:400px;"><h3 id="confirmTitle">确认操作</h3><p id="confirmMessage" style="margin:20px 0;"></p><div style="display:flex;gap:12px;"><button id="confirmOkBtn" class="btn-primary" style="flex:1;">确定</button><button id="confirmCancelBtn" class="btn-secondary" style="flex:1;">取消</button></div></div></div>
+
+    <!-- 结算 -->
+    <div id="checkoutModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>确认订单信息</h3><button id="closeCheckoutBtn" style="background:none;border:none;font-size:1.8rem;">&times;</button></div><div id="checkoutAddresses"></div><hr><div id="checkoutCoupons"></div><hr><div id="checkoutItems"></div><div class="checkout-summary"><div class="line"><span>商品原价</span><span id="checkoutOriginalTotal"></span></div><div class="line"><span>优惠券抵扣</span><span id="checkoutDiscount">-¥0.00</span></div><div class="line total"><span>实付金额</span><span id="checkoutFinalTotal"></span></div></div><div style="margin:16px 0;"><p style="font-weight:600;margin-bottom:8px;">选择支付方式</p><div class="payment-options" id="paymentOptions"><label class="selected"><input type="radio" name="payment" value="wechat" checked> <i class="fab fa-weixin" style="color:#07c160;"></i> 微信支付</label><label><input type="radio" name="payment" value="alipay"> <i class="fab fa-alipay" style="color:#1677ff;"></i> 支付宝</label><label><input type="radio" name="payment" value="bankcard"> <i class="fas fa-credit-card"></i> 银行卡支付</label></div><div id="bankCardCheck" style="display:none;background:#fef3c7;padding:8px 16px;border-radius:20px;font-size:0.9rem;"><i class="fas fa-exclamation-triangle"></i> 您尚未绑定银行卡，请先 <a href="#" id="gotoBindCard" style="color:#1e3c72;font-weight:600;">绑定银行卡</a></div></div><button id="submitOrderBtn" class="btn-primary">提交订单</button></div></div>
+
+    <!-- 订单详情 -->
+    <div id="orderDetailModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>订单详情</h3><button id="closeOrderDetailBtn" style="background:none;border:none;font-size:1.8rem;">&times;</button></div><div id="orderDetailContent"></div><div class="order-detail-actions" id="orderDetailActions"></div></div></div>
+
+    <!-- 评价 -->
+    <div id="reviewModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>评价商品</h3><button id="closeReviewBtn" style="background:none;border:none;font-size:1.8rem;">&times;</button></div><div id="reviewProductName" style="font-weight:600;margin-bottom:8px;"></div><div class="star-rating" id="starRating"><span class="star" data-value="1">★</span><span class="star" data-value="2">★</span><span class="star" data-value="3">★</span><span class="star" data-value="4">★</span><span class="star" data-value="5">★</span></div><textarea id="reviewText" placeholder="分享您的使用感受..." style="width:100%;padding:10px;border-radius:20px;border:1px solid #ddd;margin:12px 0;min-height:80px;"></textarea><button id="submitReviewBtn" class="btn-primary">提交评价</button></div></div>
+
+    <!-- 绑定银行卡 -->
+    <div id="bindCardModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>绑定银行卡</h3><button id="closeBindCardBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div id="bindCardError" class="error-msg" style="display:none;"></div><input type="text" id="cardNumber" placeholder="卡号" style="width:100%;padding:10px;margin-bottom:8px;border-radius:30px;border:1px solid #ddd;"><input type="text" id="cardHolder" placeholder="持卡人姓名" style="width:100%;padding:10px;margin-bottom:8px;border-radius:30px;border:1px solid #ddd;"><div style="display:flex;gap:8px;"><input type="text" id="cardExpiry" placeholder="有效期 (MM/YY)" style="flex:1;padding:10px;border-radius:30px;border:1px solid #ddd;"><input type="text" id="cardCvv" placeholder="CVV" style="flex:1;padding:10px;border-radius:30px;border:1px solid #ddd;"></div><button id="saveCardBtn" class="btn-primary" style="margin-top:12px;">保存银行卡</button></div></div>
+
+    <!-- 售后申请 -->
+    <div id="afterSalesModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>申请售后</h3><button id="closeAfterSalesBtn" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">&times;</button></div><div id="afterSalesInfo"></div><select id="afterSalesType" style="width:100%;padding:10px;border-radius:30px;border:1px solid #ddd;margin:8px 0;"><option value="return">退货退款</option><option value="refund">仅退款</option></select><textarea id="afterSalesReason" placeholder="请简述售后原因" style="width:100%;padding:10px;border-radius:20px;border:1px solid #ddd;min-height:60px;margin:8px 0;"></textarea><button id="submitAfterSalesBtn" class="btn-primary">提交申请</button></div></div>
+
+    <!-- 后台管理 -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header"><h2><i class="fas fa-cog"></i> 极光商城 - 后台管理</h2><button id="closeAdminBtn" class="btn-sm btn-danger"><i class="fas fa-times"></i> 关闭</button></div>
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="orders">订单管理</button>
+            <button class="admin-tab" data-tab="products">商品管理</button>
+            <button class="admin-tab" data-tab="coupons">优惠券管理</button>
+            <button class="admin-tab" data-tab="users">用户管理</button>
+            <button class="admin-tab" data-tab="sales">售后管理</button>
+        </div>
+        <div id="adminContent" style="margin-top:20px;"></div>
+    </div>
+
+<script>
+    // ===================================================================
+    // 完整JavaScript（精简但功能完整）
+    // ===================================================================
+    const PRODUCTS = [
+        {id:1,name:"iPhone 15 Pro Max",category:"手机",price:8999,icon:"fa-mobile-screen",desc:"A17芯片，钛金属，6.9英寸",stock:50,specs:["钛金属","黑色","256GB","512GB"]},
+        {id:2,name:"iPhone 15 Pro",category:"手机",price:7999,icon:"fa-mobile-screen",desc:"A17芯片，钛金属边框，三摄",stock:30,specs:["钛金属","黑色","128GB","256GB"]},
+        {id:3,name:"华为 Mate 60 Pro",category:"手机",price:6999,icon:"fa-mobile-screen",desc:"麒麟芯片，卫星通话，昆仑玻璃",stock:22,specs:["雅丹黑","白沙银","256GB","512GB"]},
+        {id:4,name:"华为 P60 Art",category:"手机",price:8999,icon:"fa-mobile-screen",desc:"超聚光影像，双向北斗",stock:15,specs:["蔚蓝海","流光金","256GB"]},
+        {id:5,name:"小米 14 Ultra",category:"手机",price:5999,icon:"fa-mobile-screen",desc:"骁龙8 Gen3，徕卡光学，90W快充",stock:20,specs:["白色","黑色","绿色","256GB","512GB"]},
+        {id:6,name:"小米 14 Pro",category:"手机",price:4999,icon:"fa-mobile-screen",desc:"骁龙8 Gen3，2K屏，120W快充",stock:18,specs:["白色","黑色","128GB","256GB"]},
+        {id:7,name:"三星 S24 Ultra",category:"手机",price:8999,icon:"fa-mobile-screen",desc:"AI智能，S Pen，2亿像素",stock:12,specs:["钛灰","钛黑","256GB","512GB"]},
+        {id:8,name:"三星 S24+",category:"手机",price:7499,icon:"fa-mobile-screen",desc:"AI体验，骁龙8 Gen3，大屏",stock:14,specs:["浅蓝","深灰","128GB","256GB"]},
+        {id:9,name:"OPPO Find X7 Ultra",category:"手机",price:5999,icon:"fa-mobile-screen",desc:"双潜望长焦，哈苏影像",stock:16,specs:["海阔天空","大漠银月","256GB","512GB"]},
+        {id:10,name:"vivo X100 Pro",category:"手机",price:4999,icon:"fa-mobile-screen",desc:"蔡司影像，天玑9300",stock:20,specs:["星迹蓝","白月光","256GB"]},
+        {id:11,name:"MacBook Pro 16",category:"电脑",price:19999,icon:"fa-laptop",desc:"M3 Pro芯片，36GB内存，1TB SSD",stock:8,specs:["深空灰","银色","36GB","64GB"]},
+        {id:12,name:"MacBook Air 15",category:"电脑",price:10999,icon:"fa-laptop",desc:"M3芯片，16GB内存，512GB SSD",stock:15,specs:["深空灰","银色","午夜色","16GB","24GB"]},
+        {id:13,name:"联想 ThinkPad X1 Carbon",category:"电脑",price:9999,icon:"fa-laptop",desc:"i7处理器，16G内存，1T SSD",stock:10,specs:["黑色","16GB","32GB"]},
+        {id:14,name:"联想 Yoga 9i",category:"电脑",price:8999,icon:"fa-laptop",desc:"i7处理器，16G内存，4K触屏",stock:12,specs:["深蓝","灰色","16GB"]},
+        {id:15,name:"戴尔 XPS 16",category:"电脑",price:12999,icon:"fa-laptop",desc:"Ultra 9处理器，32G内存，4K OLED",stock:8,specs:["银色","黑色","32GB","64GB"]},
+        {id:16,name:"戴尔 XPS 13",category:"电脑",price:9999,icon:"fa-laptop",desc:"Ultra 7处理器，16G内存，2.8K触屏",stock:10,specs:["白色","黑色","16GB"]},
+        {id:17,name:"华为 MateBook 16s",category:"电脑",price:7999,icon:"fa-laptop",desc:"i9处理器，16G内存，2.5K触屏",stock:14,specs:["深空灰","银色","16GB"]},
+        {id:18,name:"华为 MateBook X Pro",category:"电脑",price:11999,icon:"fa-laptop",desc:"i7处理器，16G内存，OLED",stock:10,specs:["锦白","墨蓝","16GB"]},
+        {id:19,name:"华硕 ROG 游戏本",category:"电脑",price:11999,icon:"fa-laptop",desc:"i9+RTX4070，32G内存，1T固态",stock:7,specs:["黑色","灰色","32GB"]},
+        {id:20,name:"华硕 灵耀14",category:"电脑",price:6999,icon:"fa-laptop",desc:"Ultra 7，16G内存，2.8K OLED",stock:15,specs:["银色","蓝色","16GB"]},
+        {id:21,name:"Sony WH-1000XM5",category:"音频",price:1999,icon:"fa-headphones",desc:"旗舰降噪，30小时续航，LDAC",stock:40,specs:["黑色","银色"]},
+        {id:22,name:"Sony WF-1000XM5",category:"音频",price:1599,icon:"fa-headphones",desc:"真无线降噪，8小时续航",stock:45,specs:["黑色","白色"]},
+        {id:23,name:"Bose QuietComfort Ultra",category:"音频",price:2299,icon:"fa-headphones",desc:"沉浸式降噪，舒适佩戴，20小时",stock:35,specs:["黑色","白色"]},
+        {id:24,name:"Bose QC45",category:"音频",price:1499,icon:"fa-headphones",desc:"经典降噪，轻便，24小时",stock:30,specs:["黑色","灰色"]},
+        {id:25,name:"AirPods Pro 2",category:"音频",price:1899,icon:"fa-headphones",desc:"自适应降噪，空间音频，H2芯片",stock:50,specs:["白色"]},
+        {id:26,name:"AirPods Max",category:"音频",price:3999,icon:"fa-headphones",desc:"头戴式降噪，监听级音质",stock:20,specs:["深空灰","银色","天蓝色"]},
+        {id:27,name:"华为 FreeBuds Pro 3",category:"音频",price:1299,icon:"fa-headphones",desc:"麒麟芯片，智慧降噪",stock:45,specs:["陶瓷白","冰霜银"]},
+        {id:28,name:"小米 Buds 4 Pro",category:"音频",price:999,icon:"fa-headphones",desc:"旗舰降噪，46dB深度，40小时",stock:55,specs:["黑色","白色"]},
+        {id:29,name:"Apple Watch Ultra 2",category:"运动",price:5999,icon:"fa-clock",desc:"钛金属表壳，精准GPS",stock:20,specs:["钛金属原色","黑色"]},
+        {id:30,name:"Apple Watch Series 9",category:"运动",price:3199,icon:"fa-clock",desc:"S9芯片，全天候显示，心电图",stock:25,specs:["星光色","午夜色","红色"]},
+        {id:31,name:"华为 Watch GT 4",category:"运动",price:2499,icon:"fa-clock",desc:"圆形表盘，心脏健康，14天",stock:25,specs:["黑色","棕色","银色"]},
+        {id:32,name:"华为 Watch D",category:"运动",price:2999,icon:"fa-clock",desc:"血压监测，心电分析",stock:18,specs:["黑色","白色"]},
+        {id:33,name:"三星 Galaxy Watch 6",category:"运动",price:2999,icon:"fa-clock",desc:"旋转表圈，全面健康",stock:18,specs:["黑色","银色"]},
+        {id:34,name:"三星 Galaxy Watch 6 Classic",category:"运动",price:3299,icon:"fa-clock",desc:"经典设计，旋转表圈",stock:15,specs:["黑色","银色"]},
+        {id:35,name:"小米 Watch S3",category:"运动",price:999,icon:"fa-clock",desc:"AMOLED屏幕，血氧心率",stock:30,specs:["黑色","白色"]},
+        {id:36,name:"Garmin Forerunner 265",category:"运动",price:3799,icon:"fa-clock",desc:"专业运动，GPS定位",stock:12,specs:["黑色","白色"]},
+        {id:37,name:"大疆 DJI Mini 4 Pro",category:"数码",price:4799,icon:"fa-helicopter",desc:"轻便航拍，4K60帧，全向避障",stock:10,specs:["标准版","畅飞套装"]},
+        {id:38,name:"大疆 Osmo Pocket 3",category:"数码",price:3499,icon:"fa-camera",desc:"口袋云台，4K视频，三轴稳定",stock:15,specs:["标准版","全能套装"]},
+        {id:39,name:"GoPro Hero 12",category:"数码",price:3999,icon:"fa-camera",desc:"运动相机，5.3K视频，防抖防水",stock:15,specs:["黑色","白色"]},
+        {id:40,name:"罗技 MX Master 3S",category:"电脑",price:899,icon:"fa-mouse",desc:"无线鼠标，极速滚轮，人体工学",stock:40,specs:["石墨灰","白色"]},
+        {id:41,name:"闪迪 2TB 移动SSD",category:"数码",price:1299,icon:"fa-hard-drive",desc:"高速传输，便携耐用",stock:50,specs:["黑色","银色"]},
+        {id:42,name:"绿联 100W 充电头",category:"数码",price:299,icon:"fa-bolt",desc:"氮化镓，三口快充",stock:80,specs:["黑色","白色"]},
+        {id:43,name:"联想 小新 Pad Pro 12.7",category:"数码",price:1899,icon:"fa-tablet",desc:"12.7英寸大屏，骁龙870",stock:20,specs:["灰色","绿色"]},
+        {id:44,name:"华为 MatePad Pro 13.2",category:"数码",price:5699,icon:"fa-tablet",desc:"13.2英寸OLED，星闪技术",stock:12,specs:["雅川青","曜金黑"]}
+    ];
+
+    const DEFAULT_COUPONS = [
+        {id:1001,name:'全品类满100减10',type:'满减',value:10,threshold:100,applicableType:'all',applicableId:null,maxDiscount:null,expiry:'2026-12-31',stock:100},
+        {id:1002,name:'全品类满500减50',type:'满减',value:50,threshold:500,applicableType:'all',applicableId:null,maxDiscount:null,expiry:'2026-12-31',stock:80},
+        {id:1003,name:'手机品类8折券',type:'折扣',value:80,threshold:0,applicableType:'category',applicableId:'手机',maxDiscount:200,expiry:'2026-12-31',stock:50},
+        {id:1004,name:'电脑品类9折券',type:'折扣',value:90,threshold:0,applicableType:'category',applicableId:'电脑',maxDiscount:500,expiry:'2026-12-31',stock:40},
+        {id:1005,name:'华为品牌满2000减200',type:'满减',value:200,threshold:2000,applicableType:'brand',applicableId:'华为',maxDiscount:null,expiry:'2026-12-31',stock:30},
+        {id:1006,name:'苹果品牌满3000减150',type:'满减',value:150,threshold:3000,applicableType:'brand',applicableId:'Apple',maxDiscount:null,expiry:'2026-12-31',stock:25},
+        {id:1007,name:'iPhone 15 Pro Max专属减20',type:'无门槛',value:20,threshold:0,applicableType:'product',applicableId:[1],maxDiscount:null,expiry:'2026-12-31',stock:20},
+        {id:1008,name:'音频品类满1000减80',type:'满减',value:80,threshold:1000,applicableType:'category',applicableId:'音频',maxDiscount:null,expiry:'2026-12-31',stock:35},
+        {id:1009,name:'运动品类满1500减100',type:'满减',value:100,threshold:1500,applicableType:'category',applicableId:'运动',maxDiscount:null,expiry:'2026-12-31',stock:30},
+        {id:1010,name:'数码品类满2000减120',type:'满减',value:120,threshold:2000,applicableType:'category',applicableId:'数码',maxDiscount:null,expiry:'2026-12-31',stock:30}
+    ];
+
+    // ===================================================================
+    // 存储工具
+    // ===================================================================
+    const STORAGE_USERS='ecom_users_v3';
+    const STORAGE_PREFIX_CART='cart_';
+    const STORAGE_PREFIX_ORDERS='orders_';
+    const STORAGE_PREFIX_ADDRESS='addr_';
+    const STORAGE_PREFIX_COUPONS='coupons_';
+    const STORAGE_PREFIX_BANKCARD='bankcard_';
+    const STORAGE_COUPONS_POOL='coupon_pool';
+    const STORAGE_PREFIX_FAVORITES='favorites_';
+    const STORAGE_PREFIX_REVIEWS='reviews_';
+    const STORAGE_PREFIX_MESSAGES='messages_';
+    const STORAGE_PREFIX_POINTS='points_';
+    const STORAGE_PREFIX_LEVEL='level_';
+    const STORAGE_PREFIX_AFTERSALES='aftersales_';
+    const STORAGE_PREFIX_ACTIVITIES='activities_';
+
+    function getCouponPool(){let p=localStorage.getItem(STORAGE_COUPONS_POOL);if(!p){localStorage.setItem(STORAGE_COUPONS_POOL,JSON.stringify(DEFAULT_COUPONS));return DEFAULT_COUPONS;}return JSON.parse(p);}
+    function saveCouponPool(p){localStorage.setItem(STORAGE_COUPONS_POOL,JSON.stringify(p));}
+    function getUserCouponIds(u){let ids=localStorage.getItem(STORAGE_PREFIX_COUPONS+u);return ids?JSON.parse(ids):[];}
+    function saveUserCouponIds(u,ids){localStorage.setItem(STORAGE_PREFIX_COUPONS+u,JSON.stringify(ids));}
+    function getFavorites(u){let f=localStorage.getItem(STORAGE_PREFIX_FAVORITES+u);return f?JSON.parse(f):[];}
+    function saveFavorites(u,f){localStorage.setItem(STORAGE_PREFIX_FAVORITES+u,JSON.stringify(f));}
+    function getReviews(pid){let r=localStorage.getItem(STORAGE_PREFIX_REVIEWS+pid);return r?JSON.parse(r):[];}
+    function saveReviews(pid,r){localStorage.setItem(STORAGE_PREFIX_REVIEWS+pid,JSON.stringify(r));}
+    function getMessages(u){let m=localStorage.getItem(STORAGE_PREFIX_MESSAGES+u);return m?JSON.parse(m):[];}
+    function saveMessages(u,m){localStorage.setItem(STORAGE_PREFIX_MESSAGES+u,JSON.stringify(m));}
+    function getPoints(u){let p=localStorage.getItem(STORAGE_PREFIX_POINTS+u);return p?parseInt(p):0;}
+    function savePoints(u,p){localStorage.setItem(STORAGE_PREFIX_POINTS+u,JSON.stringify(p));}
+    function getLevel(u){let l=localStorage.getItem(STORAGE_PREFIX_LEVEL+u);return l||'vip0';}
+    function saveLevel(u,l){localStorage.setItem(STORAGE_PREFIX_LEVEL+u,l);}
+    function getAfterSales(u){let a=localStorage.getItem(STORAGE_PREFIX_AFTERSALES+u);return a?JSON.parse(a):[];}
+    function saveAfterSales(u,a){localStorage.setItem(STORAGE_PREFIX_AFTERSALES+u,JSON.stringify(a));}
+    function getActivities(){let a=localStorage.getItem(STORAGE_PREFIX_ACTIVITIES);return a?JSON.parse(a):[];}
+    function saveActivities(a){localStorage.setItem(STORAGE_PREFIX_ACTIVITIES,JSON.stringify(a));}
+
+    function getUsers(){let u=localStorage.getItem(STORAGE_USERS);if(u)return JSON.parse(u);const def=[{username:'demo',password:'123456'}];localStorage.setItem(STORAGE_USERS,JSON.stringify(def));return def;}
+    function saveUsers(u){localStorage.setItem(STORAGE_USERS,JSON.stringify(u));}
+    function getUserCart(u){let c=localStorage.getItem(STORAGE_PREFIX_CART+u);return c?JSON.parse(c):{};}
+    function saveUserCart(u,c){localStorage.setItem(STORAGE_PREFIX_CART+u,JSON.stringify(c));}
+    function getUserOrders(u){let o=localStorage.getItem(STORAGE_PREFIX_ORDERS+u);return o?JSON.parse(o):[];}
+    function saveUserOrders(u,o){localStorage.setItem(STORAGE_PREFIX_ORDERS+u,JSON.stringify(o));}
+    function getUserAddresses(u){let a=localStorage.getItem(STORAGE_PREFIX_ADDRESS+u);return a?JSON.parse(a):[];}
+    function saveUserAddresses(u,a){localStorage.setItem(STORAGE_PREFIX_ADDRESS+u,JSON.stringify(a));}
+    function getUserBankCard(u){let b=localStorage.getItem(STORAGE_PREFIX_BANKCARD+u);return b?JSON.parse(b):null;}
+    function saveUserBankCard(u,b){localStorage.setItem(STORAGE_PREFIX_BANKCARD+u,JSON.stringify(b));}
+
+    function validateAccount(s){if(!s||s.length<8)return{valid:false,msg:'长度至少8位'};if(!/^[A-Za-z]/.test(s))return{valid:false,msg:'须以字母开头'};if(!/[a-z]/.test(s))return{valid:false,msg:'必须包含小写字母'};if(!/[A-Z]/.test(s))return{valid:false,msg:'必须包含大写字母'};if(!/\d/.test(s))return{valid:false,msg:'必须包含数字'};if(!/^[A-Za-z0-9]+$/.test(s))return{valid:false,msg:'只能包含字母和数字'};return{valid:true};}
+    function registerUser(u,p){const users=getUsers();const a=validateAccount(u);if(!a.valid)return{success:false,msg:'账号'+a.msg};const b=validateAccount(p);if(!b.valid)return{success:false,msg:'密码'+b.msg};if(users.find(x=>x.username===u))return{success:false,msg:'用户名已存在'};users.push({username:u,password:p});saveUsers(users);saveUserCart(u,{});saveUserOrders(u,[]);saveUserAddresses(u,[]);saveUserBankCard(u,null);saveUserCouponIds(u,[]);saveFavorites(u,[]);saveMessages(u,[]);savePoints(u,100);saveLevel(u,'vip0');saveAfterSales(u,[]);return{success:true};}
+    function loginUser(u,p){const users=getUsers();const user=users.find(x=>x.username===u&&x.password===p);if(user){if(!localStorage.getItem(STORAGE_PREFIX_CART+u))saveUserCart(u,{});if(!localStorage.getItem(STORAGE_PREFIX_ORDERS+u))saveUserOrders(u,[]);if(!localStorage.getItem(STORAGE_PREFIX_ADDRESS+u))saveUserAddresses(u,[]);if(!localStorage.getItem(STORAGE_PREFIX_BANKCARD+u))saveUserBankCard(u,null);if(!localStorage.getItem(STORAGE_PREFIX_COUPONS+u))saveUserCouponIds(u,[]);if(!localStorage.getItem(STORAGE_PREFIX_FAVORITES+u))saveFavorites(u,[]);if(!localStorage.getItem(STORAGE_PREFIX_MESSAGES+u))saveMessages(u,[]);if(!localStorage.getItem(STORAGE_PREFIX_POINTS+u))savePoints(u,100);if(!localStorage.getItem(STORAGE_PREFIX_LEVEL+u))saveLevel(u,'vip0');if(!localStorage.getItem(STORAGE_PREFIX_AFTERSALES+u))saveAfterSales(u,[]);return true;}return false;}
+
+    // 计算会员等级
+    function calcLevel(points){if(points<200)return 'vip0';if(points<500)return 'vip1';if(points<1000)return 'vip2';if(points<2000)return 'vip3';return 'vip4';}
+    function getLevelName(level){const map={vip0:'普通会员',vip1:'白银会员',vip2:'黄金会员',vip3:'铂金会员',vip4:'钻石会员'};return map[level]||'普通会员';}
+    function getLevelDiscount(level){const map={vip0:100,vip1:98,vip2:97,vip3:96,vip4:95};return map[level]||100;}
+
+    // ===================================================================
+    // 优惠券工具
+    // ===================================================================
+    function claimCoupon(u,cid){const pool=getCouponPool();const c=pool.find(x=>x.id===cid);if(!c)return{success:false,msg:'不存在'};if(c.stock<=0)return{success:false,msg:'已领完'};const ids=getUserCouponIds(u);if(ids.includes(cid))return{success:false,msg:'已领取'};if(new Date(c.expiry)<new Date())return{success:false,msg:'已过期'};ids.push(cid);saveUserCouponIds(u,ids);c.stock-=1;saveCouponPool(pool);addMessage(u,'system','领取优惠券成功','您已成功领取'+c.name);return{success:true};}
+    function getAvailableCouponsForCart(u,items){const ids=getUserCouponIds(u);const pool=getCouponPool();const now=new Date();const res=[];for(const id of ids){const c=pool.find(x=>x.id===id);if(!c)continue;if(new Date(c.expiry)<now)continue;if(!isCouponApplicable(c,items))continue;res.push(c);}return res;}
+    function isCouponApplicable(c,items){if(c.applicableType==='all')return true;if(c.applicableType==='category'){return items.some(it=>{const p=PRODUCTS.find(x=>x.id===it.id);return p&&p.category===c.applicableId;});}if(c.applicableType==='brand'){return items.some(it=>{const p=PRODUCTS.find(x=>x.id===it.id);return p&&p.name.includes(c.applicableId);});}if(c.applicableType==='product'){return items.some(it=>c.applicableId.includes(it.id));}return false;}
+    function applyCoupon(c,total,items){if(c.type==='满减'){if(total<c.threshold)return 0;return Math.min(c.value,total);}else if(c.type==='折扣'){let applicableTotal=0;if(c.applicableType==='all'){applicableTotal=total;}else if(c.applicableType==='category'){items.forEach(it=>{const p=PRODUCTS.find(x=>x.id===it.id);if(p&&p.category===c.applicableId)applicableTotal+=it.price*it.quantity;});}else if(c.applicableType==='brand'){items.forEach(it=>{const p=PRODUCTS.find(x=>x.id===it.id);if(p&&p.name.includes(c.applicableId))applicableTotal+=it.price*it.quantity;});}else if(c.applicableType==='product'){items.forEach(it=>{if(c.applicableId.includes(it.id))applicableTotal+=it.price*it.quantity;});}let discount=applicableTotal*(1-c.value/100);if(c.maxDiscount!==null)discount=Math.min(discount,c.maxDiscount);return Math.min(discount,total);}else if(c.type==='无门槛'){return Math.min(c.value,total);}return 0;}
+    function useCoupon(u,cid){let ids=getUserCouponIds(u);ids=ids.filter(id=>id!==cid);saveUserCouponIds(u,ids);}
+    function restoreCoupon(u,cid){let ids=getUserCouponIds(u);if(!ids.includes(cid)){ids.push(cid);saveUserCouponIds(u,ids);}}
+
+    // 消息
+    function addMessage(u,type,title,content){const msgs=getMessages(u);msgs.unshift({id:Date.now(),type,title,content,time:new Date().toLocaleString(),read:false});saveMessages(u,msgs);}
+    function getUnreadCount(u){return getMessages(u).filter(m=>!m.read).length;}
+
+    // ===================================================================
+    // 库存管理
+    // ===================================================================
+    let globalStock={};
+    function initStock(){const stored=localStorage.getItem('ecom_stock');if(stored){globalStock=JSON.parse(stored);PRODUCTS.forEach(p=>{if(!(p.id in globalStock))globalStock[p.id]=p.stock;});}else{PRODUCTS.forEach(p=>{globalStock[p.id]=p.stock;});}saveStock();}
+    function saveStock(){localStorage.setItem('ecom_stock',JSON.stringify(globalStock));}
+    function getStock(id){return globalStock[id]||0;}
+    function deductStock(id,qty){if(getStock(id)<qty)return false;globalStock[id]-=qty;saveStock();return true;}
+    function addStock(id,qty){globalStock[id]=(globalStock[id]||0)+qty;saveStock();}
+
+    // ===================================================================
+    // 核心业务
+    // ===================================================================
+    let currentUser=null;
+
+    function createOrder(addressId,couponId,paymentMethod,itemsWithSpec){
+        const items=[];let total=0;
+        for(const entry of itemsWithSpec){
+            const product=PRODUCTS.find(p=>p.id===entry.id);
+            if(!product)continue;
+            if(!deductStock(product.id,entry.quantity)){alert(`商品${product.name}库存不足`);return false;}
+            const subtotal=product.price*entry.quantity;total+=subtotal;
+            items.push({id:product.id,name:product.name,price:product.price,quantity:entry.quantity,subtotal,spec:entry.spec||''});
+        }
+        let discount=0;let usedCoupon=null;
+        if(couponId){const pool=getCouponPool();const coupon=pool.find(c=>c.id===couponId);if(coupon){const userCoupons=getUserCouponIds(currentUser);if(userCoupons.includes(couponId)){discount=applyCoupon(coupon,total,items);usedCoupon=coupon;}else{alert('未领取该优惠券');items.forEach(it=>addStock(it.id,it.quantity));return false;}}}
+        const level=getLevel(currentUser);
+        const levelDiscount=getLevelDiscount(level);
+        const memberDiscount = total * (1 - levelDiscount/100);
+        const finalTotal = total - discount - memberDiscount;
+        const addresses=getUserAddresses(currentUser);
+        const address=addresses.find(a=>a.id===addressId);
+        if(!address){items.forEach(it=>addStock(it.id,it.quantity));alert('请选择有效地址');return false;}
+        const orders=getUserOrders(currentUser);
+        const newOrder={
+            orderId:Date.now(),
+            date:new Date().toLocaleString(),
+            items:items,
+            total:Math.max(finalTotal,0),
+            originalTotal:total,
+            discount:discount,
+            memberDiscount:memberDiscount,
+            usedCoupon:usedCoupon?{id:usedCoupon.id,name:usedCoupon.name,type:usedCoupon.type}:null,
+            status:'pending',
+            address:address,
+            paymentMethod:paymentMethod||'wechat',
+            summary:items.map(i=>`${i.name} x${i.quantity}${i.spec?'('+i.spec+')':''}`).join(', '),
+            createTime:Date.now()
+        };
+        orders.unshift(newOrder);
+        saveUserOrders(currentUser,orders);
+        saveUserCart(currentUser,{});
+        // 锁定库存已在扣减时完成，超时释放通过定时任务检查
+        addMessage(currentUser,'order','订单创建成功','订单号: '+newOrder.orderId+' 已创建，请及时支付');
+        return newOrder;
+    }
+
+    // 检查超时订单（15分钟未支付自动取消）
+    function checkTimeoutOrders(){
+        if(!currentUser)return;
+        const orders=getUserOrders(currentUser);
+        let changed=false;
+        orders.forEach(order=>{
+            if(order.status==='pending' && (Date.now()-order.createTime)>15*60*1000){
+                order.status='cancelled';
+                // 回滚库存
+                order.items.forEach(it=>addStock(it.id,it.quantity));
+                if(order.usedCoupon)restoreCoupon(currentUser,order.usedCoupon.id);
+                addMessage(currentUser,'system','订单超时取消','订单号: '+order.orderId+' 因超时未支付已取消');
+                changed=true;
+            }
+        });
+        if(changed){saveUserOrders(currentUser,orders);renderOrdersView();}
+    }
+
+    function payOrder(orderId,success){
+        const orders=getUserOrders(currentUser);
+        const idx=orders.findIndex(o=>o.orderId===orderId);
+        if(idx===-1)return{success:false,msg:'订单不存在'};
+        const order=orders[idx];
+        if(order.status!=='pending')return{success:false,msg:'订单状态不允许支付'};
+        if(success){
+            order.status='paid';
+            if(order.usedCoupon){useCoupon(currentUser,order.usedCoupon.id);}
+            // 赠送积分（1元=1积分）
+            const points=Math.floor(order.total);
+            const curPoints=getPoints(currentUser);
+            savePoints(currentUser,curPoints+points);
+            // 更新会员等级
+            const newLevel=calcLevel(curPoints+points);
+            saveLevel(currentUser,newLevel);
+            addMessage(currentUser,'order','支付成功','订单号: '+order.orderId+' 支付成功，等待发货，获得'+points+'积分');
+            saveUserOrders(currentUser,orders);
+            return{success:true};
+        }else{
+            order.items.forEach(it=>addStock(it.id,it.quantity));
+            if(order.usedCoupon)restoreCoupon(currentUser,order.usedCoupon.id);
+            order.status='cancelled';
+            saveUserOrders(currentUser,orders);
+            addMessage(currentUser,'order','支付失败','订单号: '+order.orderId+' 支付失败，订单已取消');
+            return{success:false,msg:'支付失败，订单已取消'};
+        }
+    }
+
+    function cancelOrder(orderId){
+        const orders=getUserOrders(currentUser);
+        const idx=orders.findIndex(o=>o.orderId===orderId);
+        if(idx===-1)return{success:false,msg:'订单不存在'};
+        const order=orders[idx];
+        if(order.status==='completed'||order.status==='cancelled')return{success:false,msg:'订单已完结'};
+        order.items.forEach(it=>addStock(it.id,it.quantity));
+        if(order.usedCoupon)restoreCoupon(currentUser,order.usedCoupon.id);
+        order.status='cancelled';
+        saveUserOrders(currentUser,orders);
+        addMessage(currentUser,'order','订单已取消','订单号: '+order.orderId+' 已取消');
+        return{success:true};
+    }
+
+    function shipOrder(orderId,company,tracking){
+        const orders=getUserOrders(currentUser);
+        const idx=orders.findIndex(o=>o.orderId===orderId);
+        if(idx===-1)return false;
+        const order=orders[idx];
+        if(order.status!=='paid')return false;
+        order.status='shipped';
+        order.shipping={company,tracking};
+        saveUserOrders(currentUser,orders);
+        addMessage(currentUser,'order','订单已发货','订单号: '+order.orderId+' 已通过'+company+'发货，运单号: '+tracking);
+        return true;
+    }
+
+    function completeOrder(orderId){
+        const orders=getUserOrders(currentUser);
+        const idx=orders.findIndex(o=>o.orderId===orderId);
+        if(idx===-1)return false;
+        const order=orders[idx];
+        if(order.status!=='shipped')return false;
+        order.status='completed';
+        saveUserOrders(currentUser,orders);
+        addMessage(currentUser,'order','确认收货成功','订单号: '+order.orderId+' 已确认收货');
+        return true;
+    }
+
+    // 售后
+    function submitAfterSales(orderId,type,reason){
+        const orders=getUserOrders(currentUser);
+        const order=orders.find(o=>o.orderId===orderId);
+        if(!order)return false;
+        if(order.status!=='shipped' && order.status!=='completed'){alert('仅已发货或已完成订单可售后');return false;}
+        const sales=getAfterSales(currentUser);
+        sales.push({id:Date.now(),orderId,type,reason,status:'pending',time:new Date().toLocaleString()});
+        saveAfterSales(currentUser,sales);
+        order.status='after_sale';
+        saveUserOrders(currentUser,orders);
+        addMessage(currentUser,'system','售后申请已提交','订单号: '+order.orderId+' 售后申请已提交，等待审核');
+        return true;
+    }
+
+    // ===================================================================
+    // 后台管理
+    // ===================================================================
+    let adminTab='orders';
+    function renderAdmin(){
+        const container=document.getElementById('adminContent');
+        if(adminTab==='orders'){renderAdminOrders(container);}
+        else if(adminTab==='products'){renderAdminProducts(container);}
+        else if(adminTab==='coupons'){renderAdminCoupons(container);}
+        else if(adminTab==='users'){renderAdminUsers(container);}
+        else if(adminTab==='sales'){renderAdminSales(container);}
+    }
+
+    function renderAdminOrders(container){
+        const allOrders=[];const users=getUsers();users.forEach(u=>{const orders=getUserOrders(u.username);orders.forEach(o=>{allOrders.push({...o,username:u.username});});});
+        allOrders.sort((a,b)=>b.orderId-a.orderId);
+        let html=`<table class="admin-table"><tr><th>用户</th><th>订单号</th><th>商品</th><th>金额</th><th>状态</th><th>操作</th></tr>`;
+        allOrders.forEach(o=>{
+            const statusMap={'pending':'待付款','paid':'待发货','shipped':'待收货','completed':'已完成','cancelled':'已取消','after_sale':'售后中'};
+            html+=`<tr><td>${escapeHtml(o.username)}</td><td>${o.orderId}</td><td>${o.summary}</td><td>¥${o.total.toFixed(2)}</td><td>${statusMap[o.status]||o.status}</td><td>`;
+            if(o.status==='paid')html+=`<button class="btn-sm btn-primary" data-action="adminShip" data-order="${o.orderId}" data-user="${o.username}">发货</button>`;
+            html+=`</td></tr>`;
+        });
+        html+='</table>';
+        container.innerHTML=html;
+        container.querySelectorAll('[data-action="adminShip"]').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                const orderId=parseInt(this.dataset.order);
+                const username=this.dataset.user;
+                const company=prompt('请输入物流公司');
+                if(!company)return;
+                const tracking=prompt('请输入运单号');
+                if(!tracking)return;
+                // 切换用户上下文发货
+                const originUser=currentUser;
+                currentUser=username;
+                const result=shipOrder(orderId,company,tracking);
+                currentUser=originUser;
+                if(result){alert('发货成功');renderAdmin();}
+            });
+        });
+    }
+
+    function renderAdminProducts(container){
+        let html=`<table class="admin-table"><tr><th>ID</th><th>商品名</th><th>分类</th><th>价格</th><th>库存</th><th>操作</th></tr>`;
+        PRODUCTS.forEach(p=>{
+            html+=`<tr><td>${p.id}</td><td>${escapeHtml(p.name)}</td><td>${p.category}</td><td>¥${p.price}</td><td>${getStock(p.id)}</td><td><button class="btn-sm btn-secondary" data-action="editStock" data-id="${p.id}">修改库存</button></td></tr>`;
+        });
+        html+='</table>';
+        container.innerHTML=html;
+        container.querySelectorAll('[data-action="editStock"]').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                const id=parseInt(this.dataset.id);
+                const newStock=prompt('请输入新库存数量',getStock(id));
+                if(newStock!==null && !isNaN(parseInt(newStock))){
+                    globalStock[id]=parseInt(newStock);saveStock();renderAdmin();
+                }
+            });
+        });
+    }
+
+    function renderAdminCoupons(container){
+        const pool=getCouponPool();
+        let html=`<table class="admin-table"><tr><th>ID</th><th>名称</th><th>类型</th><th>优惠</th><th>库存</th><th>操作</th></tr>`;
+        pool.forEach(c=>{
+            html+=`<tr><td>${c.id}</td><td>${escapeHtml(c.name)}</td><td>${c.type}</td><td>${c.type==='折扣'?c.value+'%':(c.type==='满减'?'满'+c.threshold+'减'+c.value:'减'+c.value)}</td><td>${c.stock}</td><td><button class="btn-sm btn-danger" data-action="deleteCoupon" data-id="${c.id}">删除</button></td></tr>`;
+        });
+        html+=`</table><button id="addCouponBtn" class="btn-primary" style="margin-top:12px;">+ 新增优惠券</button>`;
+        container.innerHTML=html;
+        document.getElementById('addCouponBtn')?.addEventListener('click',function(){
+            const name=prompt('请输入优惠券名称');
+            if(!name)return;const type=prompt('请输入类型(满减/折扣/无门槛)');if(!type)return;
+            const value=parseFloat(prompt('请输入优惠值(满减为金额，折扣为百分比)'));
+            if(isNaN(value))return;
+            const threshold=parseFloat(prompt('请输入门槛金额(折扣或无门槛填0)'))||0;
+            const pool=getCouponPool();const maxId=pool.reduce((max,c)=>Math.max(max,c.id),1000);
+            pool.push({id:maxId+1,name,type,value,threshold,applicableType:'all',applicableId:null,maxDiscount:null,expiry:'2026-12-31',stock:100});
+            saveCouponPool(pool);renderAdmin();
+        });
+        container.querySelectorAll('[data-action="deleteCoupon"]').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                const id=parseInt(this.dataset.id);
+                if(confirm('确定删除该优惠券吗？')){
+                    let pool=getCouponPool();pool=pool.filter(c=>c.id!==id);saveCouponPool(pool);renderAdmin();
+                }
+            });
+        });
+    }
+
+    function renderAdminUsers(container){
+        const users=getUsers();
+        let html=`<table class="admin-table"><tr><th>用户名</th><th>积分</th><th>会员等级</th><th>订单数</th></tr>`;
+        users.forEach(u=>{
+            const orders=getUserOrders(u.username);
+            const points=getPoints(u.username);
+            const level=getLevel(u.username);
+            html+=`<tr><td>${escapeHtml(u.username)}</td><td>${points}</td><td>${getLevelName(level)}</td><td>${orders.length}</td></tr>`;
+        });
+        html+='</table>';
+        container.innerHTML=html;
+    }
+
+    function renderAdminSales(container){
+        const allSales=[];const users=getUsers();users.forEach(u=>{const sales=getAfterSales(u.username);sales.forEach(s=>{allSales.push({...s,username:u.username});});});
+        allSales.sort((a,b)=>b.id-a.id);
+        let html=`<table class="admin-table"><tr><th>用户</th><th>订单号</th><th>类型</th><th>原因</th><th>状态</th><th>操作</th></tr>`;
+        allSales.forEach(s=>{
+            html+=`<tr><td>${escapeHtml(s.username)}</td><td>${s.orderId}</td><td>${s.type==='return'?'退货退款':'仅退款'}</td><td>${escapeHtml(s.reason)}</td><td>${s.status==='pending'?'待审核':'已处理'}</td><td>`;
+            if(s.status==='pending')html+=`<button class="btn-sm btn-success" data-action="approveSale" data-id="${s.id}" data-user="${s.username}">审核通过</button>`;
+            html+=`</td></tr>`;
+        });
+        html+='</table>';
+        container.innerHTML=html;
+        container.querySelectorAll('[data-action="approveSale"]').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                const id=parseInt(this.dataset.id);
+                const username=this.dataset.user;
+                const sales=getAfterSales(username);
+                const sale=sales.find(s=>s.id===id);
+                if(sale){sale.status='approved';saveAfterSales(username,sales);
+                // 回滚库存
+                const orders=getUserOrders(username);
+                const order=orders.find(o=>o.orderId===sale.orderId);
+                if(order){order.items.forEach(it=>addStock(it.id,it.quantity));order.status='completed';saveUserOrders(username,orders);}
+                addMessage(username,'system','售后审核通过','您的售后申请已通过');renderAdmin();}
+            });
+        });
+    }
+
+    // ===================================================================
+    // UI渲染
+    // ===================================================================
+    let currentCategory='all',currentSearch='',currentOrderFilter='all';
+    let bannerIndex=0,bannerTimer=null;
+
+    function renderProducts(){
+        const searchTerm=currentSearch.trim().toLowerCase();
+        const activities=getActivities();
+        let filtered=PRODUCTS.filter(p=>{
+            if(currentCategory!=='all'&&p.category!==currentCategory)return false;
+            if(searchTerm){
+                const matchName=p.name.toLowerCase().includes(searchTerm);
+                const matchCategory=p.category.toLowerCase().includes(searchTerm);
+                const matchDesc=p.desc.toLowerCase().includes(searchTerm);
+                if(!matchName&&!matchCategory&&!matchDesc)return false;
+            }
+            return true;
+        });
+        const container=document.getElementById('productGrid');
+        if(filtered.length===0&&searchTerm){container.innerHTML=`<div class="no-result"><i class="fas fa-search" style="font-size:2.5rem;display:block;margin-bottom:16px;"></i>未找到相关商品<br><span style="font-size:0.9rem;">请尝试其他关键词</span></div>`;return;}
+        if(filtered.length===0){container.innerHTML='<div class="no-result">暂无商品</div>';return;}
+        const favs=currentUser?getFavorites(currentUser):[];
+        container.innerHTML=filtered.map(p=>{
+            const avgRating=getAverageRating(p.id);
+            const stars=avgRating>0?'★'.repeat(Math.round(avgRating)):'暂无评价';
+            const activity=activities.find(a=>a.productId===p.id && new Date(a.endTime)>new Date());
+            let priceDisplay=`¥${p.price.toFixed(2)}`;
+            let tag='';
+            if(activity){
+                const actPrice=activity.price||(p.price*activity.discount/100);
+                priceDisplay=`¥${actPrice.toFixed(2)} <span class="origin">¥${p.price.toFixed(2)}</span>`;
+                tag=`<span class="product-tag">${activity.name}</span>`;
+            }
+            return `<div class="product-card" data-id="${p.id}">
+                ${tag}
+                <button class="favorite-btn ${favs.includes(p.id)?'active':''}" data-id="${p.id}"><i class="fas fa-heart"></i></button>
+                <div class="product-icon"><i class="fas ${p.icon}"></i></div>
+                <div class="product-name">${escapeHtml(p.name)}</div>
+                <div class="product-price">${priceDisplay}</div>
+                <div class="product-rating">${typeof stars==='string'?stars:stars+' / 5'}</div>
+                <div style="font-size:0.7rem;color:#888;">库存: ${getStock(p.id)}</div>
+                <button class="add-cart-btn" data-id="${p.id}" ${getStock(p.id)<=0?'disabled':''}>加入购物车</button>
+            </div>`;
+        }).join('');
+        document.querySelectorAll('.favorite-btn').forEach(btn=>{btn.addEventListener('click',async(e)=>{e.stopPropagation();if(!currentUser){showLoginModal();return;}const id=parseInt(btn.dataset.id);toggleFavorite(currentUser,id);renderProducts();if(document.getElementById('profileModal').style.display==='flex')renderProfile();});});
+        document.querySelectorAll('.add-cart-btn').forEach(btn=>{btn.addEventListener('click',async(e)=>{e.stopPropagation();if(!await requireLogin())return;const id=parseInt(btn.dataset.id);addToCart(id);});});
+        document.querySelectorAll('.product-card').forEach(card=>{card.addEventListener('click',(e)=>{if(e.target.closest('.favorite-btn')||e.target.closest('.add-cart-btn'))return;const id=parseInt(card.dataset.id);showProductDetail(id);});});
+    }
+
+    let selectedSpec='';
+    function showProductDetail(id){
+        const p=PRODUCTS.find(p=>p.id===id);if(!p)return;
+        document.getElementById('modalProductName').innerText=p.name;
+        document.getElementById('modalProductDesc').innerHTML=`<p>${p.desc}</p>`;
+        const activities=getActivities();const act=activities.find(a=>a.productId===id && new Date(a.endTime)>new Date());
+        let priceDisplay=`¥${p.price.toFixed(2)}`;
+        if(act){const actPrice=act.price||(p.price*act.discount/100);priceDisplay=`¥${actPrice.toFixed(2)} <span class="origin">¥${p.price.toFixed(2)}</span>`;}
+        document.getElementById('modalProductPrice').innerHTML=priceDisplay;
+        document.getElementById('modalStock').innerText=getStock(p.id);
+        const specsContainer=document.getElementById('modalSpecs');
+        if(p.specs&&p.specs.length>0){selectedSpec=p.specs[0];specsContainer.innerHTML=`<div style="font-weight:600;">选择规格</div><div class="spec-group">`+p.specs.map(s=>`<button class="spec-btn ${s===selectedSpec?'selected':''}" data-spec="${s}">${s}</button>`).join('')+`</div>`;
+        specsContainer.querySelectorAll('.spec-btn').forEach(btn=>{btn.addEventListener('click',function(){specsContainer.querySelectorAll('.spec-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');selectedSpec=this.dataset.spec;});});}else{specsContainer.innerHTML='';selectedSpec='';}
+        let qty=1;const qtySpan=document.getElementById('modalQty');const dec=document.getElementById('modalDecQty');const inc=document.getElementById('modalIncQty');const addBtn=document.getElementById('modalAddToCart');const updateQty=()=>{qtySpan.innerText=qty;};dec.onclick=()=>{if(qty>1)qty--;updateQty();};inc.onclick=()=>{if(qty<getStock(p.id))qty++;updateQty();};addBtn.onclick=async()=>{if(qty>getStock(p.id)){alert('库存不足');return;}if(!await requireLogin())return;addToCart(p.id,qty,selectedSpec);document.getElementById('productModal').style.display='none';};
+        const favBtn=document.getElementById('modalFavoriteBtn');const favs=currentUser?getFavorites(currentUser):[];favBtn.innerHTML=`<i class="fas fa-heart"></i> ${favs.includes(id)?'取消收藏':'收藏'}`;favBtn.onclick=async()=>{if(!currentUser){showLoginModal();return;}toggleFavorite(currentUser,id);showProductDetail(id);if(document.getElementById('profileModal').style.display==='flex')renderProfile();};
+        const reviews=getProductReviews(id);const reviewsContainer=document.getElementById('modalReviews');if(reviews.length===0){reviewsContainer.innerHTML='<div class="empty-tip">暂无评价</div>';}else{reviewsContainer.innerHTML=reviews.map(r=>`<div class="review-item"><div class="review-user">${escapeHtml(r.username)}</div><div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><div class="review-text">${escapeHtml(r.text)}</div><div style="font-size:0.7rem;color:#888;">${r.date}</div></div>`).join('');}
+        const writeReviewDiv=document.getElementById('modalWriteReview');
+        if(currentUser && hasUserPurchasedProduct(currentUser,id)){
+            writeReviewDiv.style.display='block';
+            document.getElementById('modalWriteReviewBtn').onclick=function(){
+                const orders=getUserOrders(currentUser);
+                const completedOrder=orders.find(o=>o.status==='completed' && o.items.some(item=>item.id===id));
+                if(completedOrder){openReviewModal(completedOrder.orderId);}else{alert('未找到可评价的订单');}
+            };
+        }else{writeReviewDiv.style.display='none';}
+        document.getElementById('productModal').style.display='flex';
+    }
+
+    function addToCart(productId,qty=1,spec=''){if(!currentUser)return;const cart=getUserCart(currentUser);const key=spec?`${productId}_${spec}`:`${productId}`;const newQty=(cart[key]||0)+qty;if(newQty>getStock(productId)){alert('库存不足');return;}cart[key]=newQty;saveUserCart(currentUser,cart);renderCartView();showTip('已加入购物车');}
+
+    function renderCartView(){if(!currentUser){document.getElementById('cartContainer').innerHTML='<div class="empty-tip">请登录查看购物车</div>';document.getElementById('cartTotal').innerHTML='';return;}const cart=getUserCart(currentUser);const container=document.getElementById('cartContainer');const totalSpan=document.getElementById('cartTotal');const entries=Object.entries(cart);if(entries.length===0){container.innerHTML='<div class="empty-tip">购物车空空如也</div>';totalSpan.innerHTML='';document.getElementById('cartSelectAll').checked=false;return;}let total=0;let html='';for(const [key,qty] of entries){const parts=key.split('_');const productId=parseInt(parts[0]);const spec=parts[1]||'';const product=PRODUCTS.find(p=>p.id===productId);if(!product)continue;const subtotal=product.price*qty;total+=subtotal;html+=`<div class="cart-item" data-key="${key}"><input type="checkbox" class="cart-checkbox" data-key="${key}"><div class="cart-item-info"><strong>${escapeHtml(product.name)}</strong> ${spec?'('+escapeHtml(spec)+')':''}<br>¥${product.price} x ${qty} = ¥${subtotal}</div><div class="cart-item-controls"><button class="qty-btn" data-key="${key}" data-delta="-1">-</button><span>${qty}</span><button class="qty-btn" data-key="${key}" data-delta="1">+</button><button class="qty-btn" data-key="${key}" data-delta="-999">🗑️</button></div></div>`;}
+        container.innerHTML=html;totalSpan.innerHTML=`<strong>总计: ¥${total.toFixed(2)}</strong>`;
+        const allCheckboxes=document.querySelectorAll('.cart-checkbox');const selectAll=document.getElementById('cartSelectAll');selectAll.checked=allCheckboxes.length>0&&allCheckboxes.length===document.querySelectorAll('.cart-checkbox:checked').length;selectAll.onchange=function(){document.querySelectorAll('.cart-checkbox').forEach(cb=>cb.checked=this.checked);};
+        document.querySelectorAll('.qty-btn').forEach(btn=>{btn.addEventListener('click',(e)=>{if(!currentUser)return;const key=btn.dataset.key;const delta=parseInt(btn.dataset.delta);const cart=getUserCart(currentUser);if(delta===-999){delete cart[key];saveUserCart(currentUser,cart);renderCartView();}else{let newQty=(cart[key]||0)+delta;if(newQty<=0)delete cart[key];else{const parts=key.split('_');const productId=parseInt(parts[0]);if(newQty>getStock(productId)){alert('库存不足');return;}cart[key]=newQty;}saveUserCart(currentUser,cart);renderCartView();}e.stopPropagation();});});
+        document.getElementById('deleteSelectedBtn').onclick=function(){const checked=document.querySelectorAll('.cart-checkbox:checked');if(checked.length===0){alert('请选择要删除的商品');return;}showConfirmModal('确认删除','确定要删除选中的商品吗？',()=>{const cart=getUserCart(currentUser);checked.forEach(cb=>{const key=cb.dataset.key;delete cart[key];});saveUserCart(currentUser,cart);renderCartView();});};}
+
+    function renderOrdersView(){if(!currentUser){document.getElementById('ordersContainer').innerHTML='<div class="empty-tip">请登录查看订单</div>';return;}checkTimeoutOrders();let orders=getUserOrders(currentUser);if(currentOrderFilter!=='all')orders=orders.filter(o=>o.status===currentOrderFilter);const container=document.getElementById('ordersContainer');if(orders.length===0){container.innerHTML='<div class="empty-tip">暂无订单</div>';return;}let html='';orders.forEach(order=>{const statusMap={'pending':'待付款','paid':'待发货','shipped':'待收货','completed':'已完成','cancelled':'已取消','after_sale':'售后中'};const statusClass='status-'+order.status;const statusText=statusMap[order.status]||order.status;html+=`<div class="order-item"><div style="display:flex;justify-content:space-between;"><span>${order.date}</span><span class="order-status ${statusClass}">${statusText}</span></div><div>${order.summary}</div><div><strong>¥${order.total.toFixed(2)}</strong> ${order.discount>0?`(已优惠¥${order.discount})`:''} ${order.memberDiscount>0?`(会员优惠¥${order.memberDiscount.toFixed(2)})`:''}</div><div style="font-size:0.8rem;">收货: ${order.address.name} ${order.address.phone}<br>${order.address.detail}</div><div style="font-size:0.8rem;">支付方式: ${order.paymentMethod==='wechat'?'微信支付':order.paymentMethod==='alipay'?'支付宝':'银行卡支付'}</div>${order.usedCoupon?`<div style="font-size:0.8rem;">使用优惠券: ${order.usedCoupon.name}</div>`:''}${order.shipping?`<div style="font-size:0.8rem;">物流: ${order.shipping.company} 运单号: ${order.shipping.tracking}</div>`:''}<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;"><button class="btn-sm btn-secondary" data-order="${order.orderId}" data-action="detail">查看详情</button>${order.status==='pending'?`<button class="btn-sm btn-primary" data-order="${order.orderId}" data-action="pay">去支付</button>`:''}${order.status==='paid'?`<button class="btn-sm btn-primary" data-order="${order.orderId}" data-action="ship">模拟发货</button>`:''}${order.status==='shipped'?`<button class="btn-sm btn-primary" data-order="${order.orderId}" data-action="complete">确认收货</button>`:''}${(order.status==='pending'||order.status==='paid'||order.status==='shipped')?`<button class="btn-sm btn-danger" data-order="${order.orderId}" data-action="cancel">取消订单</button>`:''}${order.status==='completed'?`<button class="btn-sm btn-primary" data-order="${order.orderId}" data-action="review">去评价</button>`:''}${(order.status==='shipped'||order.status==='completed')?`<button class="btn-sm btn-secondary" data-order="${order.orderId}" data-action="afterSales">${order.status==='shipped'?'退货退款':'仅退款'}</button>`:''}</div></div>`;});
+        container.innerHTML=html;
+        document.querySelectorAll('[data-order]').forEach(btn=>{btn.addEventListener('click',async(e)=>{if(!await requireLogin())return;const orderId=parseInt(btn.dataset.order);const action=btn.dataset.action;if(action==='detail'){showOrderDetail(orderId);}else if(action==='pay'){const orders=getUserOrders(currentUser);const order=orders.find(o=>o.orderId===orderId);if(order&&order.status==='pending'){showPaymentModal(order);}else{alert('订单状态已变更');}}else if(action==='ship'){const company=prompt('请输入物流公司');if(!company)return;const tracking=prompt('请输入运单号');if(!tracking)return;if(shipOrder(orderId,company,tracking)){renderOrdersView();showTip('发货成功');}}else if(action==='complete'){if(completeOrder(orderId)){renderOrdersView();showTip('收货成功');}}else if(action==='cancel'){showConfirmModal('确认取消','确定取消此订单吗？库存和优惠券将恢复。',()=>{const result=cancelOrder(orderId);if(result.success){renderOrdersView();showTip('已取消');}else alert(result.msg);});}else if(action==='review'){openReviewModal(orderId);}else if(action==='afterSales'){openAfterSalesModal(orderId);}e.stopPropagation();});});}
+
+    function showOrderDetail(orderId){const orders=getUserOrders(currentUser);const order=orders.find(o=>o.orderId===orderId);if(!order)return;const container=document.getElementById('orderDetailContent');let itemsHtml=order.items.map(item=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eee;"><span>${escapeHtml(item.name)} ${item.spec?'('+escapeHtml(item.spec)+')':''} × ${item.quantity}</span><span>¥${item.subtotal.toFixed(2)}</span></div>`).join('');container.innerHTML=`<div><strong>订单号：</strong>${order.orderId}</div><div><strong>下单时间：</strong>${order.date}</div><div><strong>状态：</strong>${['待付款','待发货','待收货','已完成','已取消','售后中'][['pending','paid','shipped','completed','cancelled','after_sale'].indexOf(order.status)]}</div><div><strong>商品明细：</strong></div>${itemsHtml}<div style="margin-top:8px;"><div>原价：¥${order.originalTotal.toFixed(2)}</div>${order.discount>0?`<div>优惠券优惠：-¥${order.discount.toFixed(2)}</div>`:''}${order.memberDiscount>0?`<div>会员优惠：-¥${order.memberDiscount.toFixed(2)}</div>`:''}<div><strong>实付：¥${order.total.toFixed(2)}</strong></div></div><div><strong>收货地址：</strong>${order.address.name} ${order.address.phone}<br>${order.address.detail}</div><div><strong>支付方式：</strong>${order.paymentMethod==='wechat'?'微信支付':order.paymentMethod==='alipay'?'支付宝':'银行卡支付'}</div>${order.usedCoupon?`<div><strong>使用优惠券：</strong>${order.usedCoupon.name}</div>`:''}${order.shipping?`<div><strong>物流：</strong>${order.shipping.company} 运单号: ${order.shipping.tracking}</div>`:''}`;
+        const actionsDiv=document.getElementById('orderDetailActions');let actionsHtml='';
+        if(order.status==='pending')actionsHtml+=`<button class="btn-sm btn-primary" data-action="pay">去支付</button>`;
+        if(order.status==='paid')actionsHtml+=`<button class="btn-sm btn-primary" data-action="ship">模拟发货</button>`;
+        if(order.status==='shipped')actionsHtml+=`<button class="btn-sm btn-primary" data-action="complete">确认收货</button>`;
+        if(order.status==='pending'||order.status==='paid'||order.status==='shipped')actionsHtml+=`<button class="btn-sm btn-danger" data-action="cancel">取消订单</button>`;
+        if(order.status==='shipped'||order.status==='completed')actionsHtml+=`<button class="btn-sm btn-secondary" data-action="afterSales">${order.status==='shipped'?'申请退货退款':'申请仅退款'}</button>`;
+        if(order.status==='completed')actionsHtml+=`<button class="btn-sm btn-primary" data-action="review">去评价</button>`;
+        actionsDiv.innerHTML=actionsHtml;
+        actionsDiv.querySelectorAll('[data-action]').forEach(btn=>{btn.addEventListener('click',function(e){const action=this.dataset.action;
+            if(action==='pay'){if(order.status==='pending')showPaymentModal(order);else alert('订单状态已变更');}
+            else if(action==='ship'){const company=prompt('请输入物流公司');if(!company)return;const tracking=prompt('请输入运单号');if(!tracking)return;if(shipOrder(orderId,company,tracking)){renderOrdersView();showTip('发货成功');document.getElementById('orderDetailModal').style.display='none';}}
+            else if(action==='complete'){if(completeOrder(orderId)){renderOrdersView();showTip('收货成功');document.getElementById('orderDetailModal').style.display='none';}}
+            else if(action==='cancel'){showConfirmModal('确认取消','确定取消此订单吗？库存和优惠券将恢复。',()=>{const result=cancelOrder(orderId);if(result.success){renderOrdersView();showTip('已取消');document.getElementById('orderDetailModal').style.display='none';}else alert(result.msg);});}
+            else if(action==='afterSales'){openAfterSalesModal(orderId);}
+            else if(action==='review'){openReviewModal(orderId);}
+            e.stopPropagation();});});
+        document.getElementById('orderDetailModal').style.display='flex';}
+
+    let reviewOrderId=null,reviewRating=0;
+    function openReviewModal(orderId){const orders=getUserOrders(currentUser);const order=orders.find(o=>o.orderId===orderId);if(!order)return;reviewOrderId=orderId;document.getElementById('reviewProductName').innerText='评价订单：'+order.summary;document.getElementById('reviewText').value='';reviewRating=0;document.querySelectorAll('#starRating .star').forEach(s=>s.classList.remove('active'));document.getElementById('reviewModal').style.display='flex';}
+    document.querySelectorAll('#starRating .star').forEach(star=>{star.addEventListener('click',function(){const val=parseInt(this.dataset.value);reviewRating=val;document.querySelectorAll('#starRating .star').forEach(s=>{s.classList.toggle('active',parseInt(s.dataset.value)<=val);});});});
+    document.getElementById('submitReviewBtn').addEventListener('click',function(){if(!currentUser)return;if(reviewRating===0){alert('请评分');return;}const text=document.getElementById('reviewText').value.trim();if(!text){alert('请填写评价内容');return;}const orders=getUserOrders(currentUser);const order=orders.find(o=>o.orderId===reviewOrderId);if(!order)return;const productId=order.items[0].id;addReview(productId,currentUser,reviewRating,text);document.getElementById('reviewModal').style.display='none';showTip('评价成功');renderOrdersView();renderProducts();});
+    document.getElementById('closeReviewBtn').addEventListener('click',function(){document.getElementById('reviewModal').style.display='none';});
+
+    function openAfterSalesModal(orderId){const orders=getUserOrders(currentUser);const order=orders.find(o=>o.orderId===orderId);if(!order)return;if(order.status!=='shipped'&&order.status!=='completed'){alert('仅已发货或已完成订单可申请售后');return;}document.getElementById('afterSalesInfo').innerHTML=`<p><strong>订单号：</strong>${order.orderId}</p><p><strong>商品：</strong>${order.summary}</p><p><strong>金额：</strong>¥${order.total.toFixed(2)}</p>`;document.getElementById('afterSalesType').value='return';document.getElementById('afterSalesReason').value='';document.getElementById('afterSalesModal').style.display='flex';
+        document.getElementById('submitAfterSalesBtn').onclick=function(){const type=document.getElementById('afterSalesType').value;const reason=document.getElementById('afterSalesReason').value.trim();if(!reason){alert('请填写售后原因');return;}if(submitAfterSales(orderId,type,reason)){document.getElementById('afterSalesModal').style.display='none';renderOrdersView();showTip('售后申请已提交');}};}
+    document.getElementById('closeAfterSalesBtn').addEventListener('click',function(){document.getElementById('afterSalesModal').style.display='none';});
+
+    function addReview(productId,username,rating,text){const reviews=getReviews(productId);reviews.push({id:Date.now(),username,rating,text,date:new Date().toLocaleString()});saveReviews(productId,reviews);}
+    function getProductReviews(productId){return getReviews(productId);}
+    function getAverageRating(productId){const reviews=getReviews(productId);if(reviews.length===0)return 0;const sum=reviews.reduce((acc,r)=>acc+r.rating,0);return sum/reviews.length;}
+    function toggleFavorite(username,productId){let favs=getFavorites(username);if(favs.includes(productId)){favs=favs.filter(id=>id!==productId);}else{favs.push(productId);}saveFavorites(username,favs);return favs;}
+    function hasUserPurchasedProduct(username,productId){const orders=getUserOrders(username);return orders.some(order=>order.status==='completed'&&order.items.some(item=>item.id===productId));}
+
+    // ===================================================================
+    // 全局UI
+    // ===================================================================
+    function escapeHtml(s){if(!s)return '';return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);}
+    function showTip(msg){let tip=document.createElement('div');tip.innerText=msg;tip.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e3c72;color:#fff;padding:10px 24px;border-radius:40px;z-index:9999;';document.body.appendChild(tip);setTimeout(()=>tip.remove(),2000);}
+
+    function showLoginModal(){document.getElementById('authOverlay').style.display='block';document.getElementById('authPanel').style.display='block';document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');document.getElementById('loginForm').style.display='block';document.getElementById('registerForm').style.display='none';document.getElementById('loginError').innerText='';document.getElementById('regError').innerText='';document.getElementById('loginUsername').value='';document.getElementById('loginPassword').value='';document.getElementById('regUsername').value='';document.getElementById('regPassword').value='';document.getElementById('regConfirmPwd').value='';}
+    function hideLoginModal(){document.getElementById('authOverlay').style.display='none';document.getElementById('authPanel').style.display='none';}
+    function requireLogin(){if(currentUser)return true;return new Promise((resolve)=>{showConfirmModal('需要登录','请先登录账号，是否立即登录？',()=>{showLoginModal();resolve(false);},()=>{resolve(false);});});}
+    let confirmCallback=null,confirmCancelCallback=null;
+    function showConfirmModal(title,msg,okCallback,cancelCallback){document.getElementById('confirmTitle').innerText=title;document.getElementById('confirmMessage').innerText=msg;confirmCallback=okCallback;confirmCancelCallback=cancelCallback||(()=>{});document.getElementById('confirmModal').style.display='flex';}
+    document.getElementById('confirmOkBtn').addEventListener('click',()=>{if(confirmCallback)confirmCallback();document.getElementById('confirmModal').style.display='none';confirmCallback=null;confirmCancelCallback=null;});
+    document.getElementById('confirmCancelBtn').addEventListener('click',()=>{if(confirmCancelCallback)confirmCancelCallback();document.getElementById('confirmModal').style.display='none';confirmCallback=null;confirmCancelCallback=null;});
+
+    function onLoginSuccess(username){currentUser=username;hideLoginModal();document.getElementById('currentUserSpan').innerText=username;document.getElementById('loginBtn').style.display='none';document.getElementById('userProfile').style.display='flex';closeDropdown();currentCategory='all';currentSearch='';currentOrderFilter='all';initCategories();renderProducts();renderCartView();renderOrdersView();if(!localStorage.getItem(STORAGE_COUPONS_POOL))saveCouponPool(DEFAULT_COUPONS);updateUserInfo();}
+    function logoutUser(){if(!currentUser)return;showConfirmModal('确认退出','确定要退出登录吗？',()=>{currentUser=null;document.getElementById('cartContainer').innerHTML='<div class="empty-tip">购物车空空如也</div>';document.getElementById('cartTotal').innerHTML='';document.getElementById('ordersContainer').innerHTML='<div class="empty-tip">暂无订单</div>';document.getElementById('currentUserSpan').innerText='未登录';document.getElementById('loginBtn').style.display='inline-block';document.getElementById('userProfile').style.display='flex';document.getElementById('pointsDisplay').innerText='';closeDropdown();renderProducts();initCategories();},()=>{});}
+
+    function toggleDropdown(e){e.stopPropagation();const dropdown=document.getElementById('userDropdown');const chevron=document.getElementById('dropdownChevron');const isOpen=dropdown.classList.contains('show');if(isOpen){dropdown.classList.remove('show');chevron.classList.remove('open');}else{dropdown.classList.add('show');chevron.classList.add('open');}}
+    function closeDropdown(){document.getElementById('userDropdown').classList.remove('show');document.getElementById('dropdownChevron').classList.remove('open');}
+    document.addEventListener('click',function(e){const profile=document.getElementById('userProfile');if(profile&&!profile.contains(e.target)){closeDropdown();}});
+
+    function updateUserInfo(){if(!currentUser)return;const points=getPoints(currentUser);const level=getLevel(currentUser);document.getElementById('pointsDisplay').innerText=`${getLevelName(level)} ${points}分`;const badge=document.getElementById('msgBadge');const unread=getUnreadCount(currentUser);if(unread>0){badge.style.display='inline';badge.innerText=unread;}else{badge.style.display='none';}}
+
+    function openProfile(){if(!currentUser){showLoginModal();return;}closeDropdown();renderProfile();document.getElementById('profileModal').style.display='flex';}
+    function closeProfile(){document.getElementById('profileModal').style.display='none';}
+    function renderProfile(){if(!currentUser)return;const points=getPoints(currentUser);const level=getLevel(currentUser);document.getElementById('profileUserName').innerText=currentUser;document.getElementById('profileLevel').innerHTML=`<span class="member-level ${level}">${getLevelName(level)}</span>`;document.getElementById('profilePoints').innerText=`积分: ${points}`;
+        const cart=getUserCart(currentUser);const cartContainer=document.getElementById('profileCartList');const entries=Object.entries(cart);if(entries.length===0){cartContainer.innerHTML='<div class="empty-tip">购物车为空</div>';}else{let html='';let total=0;for(const [key,qty] of entries){const parts=key.split('_');const pid=parseInt(parts[0]);const spec=parts[1]||'';const p=PRODUCTS.find(pr=>pr.id===pid);if(!p)continue;const subtotal=p.price*qty;total+=subtotal;html+=`<div class="profile-cart-item"><span>${escapeHtml(p.name)} ${spec?'('+escapeHtml(spec)+')':''} × ${qty}</span><span>¥${subtotal.toFixed(2)}</span></div>`;}html+=`<div style="text-align:right;font-weight:600;padding-top:6px;">总计: ¥${total.toFixed(2)}</div>`;cartContainer.innerHTML=html;}
+        const addresses=getUserAddresses(currentUser);const addrContainer=document.getElementById('profileAddressList');if(addresses.length===0){addrContainer.innerHTML='<div class="empty-tip">暂无地址</div>';}else{addrContainer.innerHTML=addresses.map(addr=>`<div class="profile-addr-item">${escapeHtml(addr.name)} ${addr.phone}<br>${escapeHtml(addr.detail)}</div>`).join('');}
+        const card=getUserBankCard(currentUser);const cardContainer=document.getElementById('profileBankCardInfo');if(card){const masked='**** **** **** '+card.number.slice(-4);cardContainer.innerHTML=`<div class="bank-card-info"><i class="fas fa-credit-card"></i> ${masked}<br>持卡人: ${card.holder}</div>`;}else{cardContainer.innerHTML='<div class="empty-tip">未绑定银行卡</div>';}
+        const couponIds=getUserCouponIds(currentUser);const pool=getCouponPool();const userCoupons=couponIds.map(id=>pool.find(c=>c.id===id)).filter(c=>c!==undefined);const couponContainer=document.getElementById('profileCouponList');if(userCoupons.length===0){couponContainer.innerHTML='<div class="empty-tip">暂无优惠券</div>';}else{couponContainer.innerHTML=userCoupons.map(c=>`<div style="border:1px solid #e0e0e0;border-radius:12px;padding:10px;margin:6px 0;"><div style="font-weight:600;">${escapeHtml(c.name)}</div><div style="font-size:0.85rem;color:#555;">${c.type} ${c.type==='折扣'?c.value+'%':(c.type==='满减'?'满'+c.threshold+'减'+c.value:'减'+c.value)}</div><div style="font-size:0.75rem;color:#888;">有效期至 ${c.expiry}</div></div>`).join('');}
+        const favs=getFavorites(currentUser);const favContainer=document.getElementById('profileFavoritesList');if(favs.length===0){favContainer.innerHTML='<div class="empty-tip">暂无收藏</div>';}else{favContainer.innerHTML=favs.map(id=>{const p=PRODUCTS.find(pr=>pr.id===id);return p?`<div style="padding:6px 0;border-bottom:1px solid #eee;">${escapeHtml(p.name)} ¥${p.price}</div>`:''}).join('');}}
+
+    function openCouponCenter(){if(!currentUser){showLoginModal();return;}const pool=getCouponPool();const userCouponIds=getUserCouponIds(currentUser);const container=document.getElementById('couponCenterList');container.innerHTML=pool.map(c=>{const claimed=userCouponIds.includes(c.id);const expired=new Date(c.expiry)<new Date();const outOfStock=c.stock<=0;const canClaim=!claimed&&!expired&&!outOfStock;return `<div class="coupon-card"><div class="coupon-name">${escapeHtml(c.name)}</div><div class="coupon-value">${c.type==='折扣'?c.value+'%':(c.type==='满减'?'满'+c.threshold+'减'+c.value:'减'+c.value)}</div><div class="coupon-meta">适用: ${c.applicableType==='all'?'全部商品':c.applicableType==='category'?c.applicableId+'类':c.applicableType==='brand'?c.applicableId+'品牌':'指定商品'}</div><div class="coupon-meta">剩余 ${c.stock} 张 · 有效期至 ${c.expiry}</div><button class="btn-claim" ${!canClaim?'disabled':''} data-coupon="${c.id}">${claimed?'已领取':expired?'已过期':outOfStock?'已领完':'立即领取'}</button></div>`;}).join('');
+        container.querySelectorAll('.btn-claim:not([disabled])').forEach(btn=>{btn.addEventListener('click',function(){const id=parseInt(this.dataset.coupon);const result=claimCoupon(currentUser,id);if(result.success){showTip('领取成功！');openCouponCenter();if(document.getElementById('profileModal').style.display==='flex')renderProfile();updateUserInfo();}else{alert(result.msg);}});});
+        document.getElementById('couponCenterModal').style.display='flex';}
+    function closeCouponCenter(){document.getElementById('couponCenterModal').style.display='none';}
+
+    // 消息中心
+    function openMsgCenter(){if(!currentUser){showLoginModal();return;}const msgs=getMessages(currentUser);const container=document.getElementById('msgList');if(msgs.length===0){container.innerHTML='<div class="empty-tip">暂无消息</div>';}else{container.innerHTML=msgs.map(m=>`<div style="border:1px solid #eee;border-radius:12px;padding:12px;margin:8px 0;${m.read?'opacity:0.7;':''}"><div style="font-weight:600;">${escapeHtml(m.title)}</div><div style="font-size:0.9rem;color:#555;">${escapeHtml(m.content)}</div><div style="font-size:0.7rem;color:#888;margin-top:4px;">${m.time}</div></div>`).join('');
+        // 标记已读
+        const newMsgs=msgs.map(m=>{m.read=true;return m;});saveMessages(currentUser,newMsgs);updateUserInfo();}
+        document.getElementById('msgCenterModal').style.display='flex';}
+    function closeMsgCenter(){document.getElementById('msgCenterModal').style.display='none';}
+
+    // 地址管理
+    let editingAddressId=null;
+    function renderAddressModal(){if(!currentUser){document.getElementById('addressList').innerHTML='<div class="empty-tip">请登录后管理地址</div>';return;}const addresses=getUserAddresses(currentUser);const container=document.getElementById('addressList');if(addresses.length===0){container.innerHTML='<div class="empty-tip">暂无地址，请添加</div>';}else{container.innerHTML=addresses.map(addr=>`<div class="address-item"><strong>${escapeHtml(addr.name)}</strong> ${addr.phone}<br>${escapeHtml(addr.detail)}<div class="addr-actions"><button class="btn-sm btn-secondary" data-edit="${addr.id}"><i class="fas fa-edit"></i> 编辑</button><button class="btn-sm btn-danger" data-del="${addr.id}"><i class="fas fa-trash"></i> 删除</button></div></div>`).join('');
+        document.querySelectorAll('[data-del]').forEach(btn=>{btn.addEventListener('click',(e)=>{e.stopPropagation();const id=parseInt(btn.dataset.del);showConfirmModal('确认删除','确定要删除此地址吗？',()=>{if(!currentUser)return;let addrs=getUserAddresses(currentUser);addrs=addrs.filter(a=>a.id!==id);saveUserAddresses(currentUser,addrs);renderAddressModal();document.getElementById('addrError').style.display='none';if(document.getElementById('profileModal').style.display==='flex')renderProfile();});});});
+        document.querySelectorAll('[data-edit]').forEach(btn=>{btn.addEventListener('click',(e)=>{e.stopPropagation();const id=parseInt(btn.dataset.edit);startEditAddress(id);});});}
+        document.getElementById('addrError').style.display='none';}
+    function startEditAddress(id){const addresses=getUserAddresses(currentUser);const addr=addresses.find(a=>a.id===id);if(!addr)return;editingAddressId=id;document.getElementById('newAddressName').value=addr.name;document.getElementById('newAddressPhone').value=addr.phone;document.getElementById('newAddressDetail').value=addr.detail;document.getElementById('addressModalTitle').innerText='编辑地址';document.getElementById('addAddressBtn').innerText='更新地址';document.getElementById('cancelEditAddressBtn').style.display='inline-block';document.getElementById('addrError').style.display='none';document.getElementById('addressModal').style.display='flex';}
+    function cancelEditAddress(){editingAddressId=null;document.getElementById('newAddressName').value='';document.getElementById('newAddressPhone').value='';document.getElementById('newAddressDetail').value='';document.getElementById('addressModalTitle').innerText='收货地址管理';document.getElementById('addAddressBtn').innerText='保存地址';document.getElementById('cancelEditAddressBtn').style.display='none';document.getElementById('addrError').style.display='none';renderAddressModal();}
+    function saveAddress(){if(!currentUser){alert('请先登录');return;}const name=document.getElementById('newAddressName').value.trim();const phone=document.getElementById('newAddressPhone').value.trim();const detail=document.getElementById('newAddressDetail').value.trim();const errorDiv=document.getElementById('addrError');if(name.length===0||name.length>10){errorDiv.textContent='姓名不能为空且长度在1~10个字符之间';errorDiv.style.display='block';return;}if(!/^\d{11}$/.test(phone)){errorDiv.textContent='手机号必须为11位数字';errorDiv.style.display='block';return;}if(detail.length===0||detail.length>20){errorDiv.textContent='地址不能为空且长度在1~20个字符之间';errorDiv.style.display='block';return;}let addrs=getUserAddresses(currentUser);if(editingAddressId){const idx=addrs.findIndex(a=>a.id===editingAddressId);if(idx!==-1){addrs[idx]={...addrs[idx],name,phone,detail};saveUserAddresses(currentUser,addrs);showTip('地址更新成功');}editingAddressId=null;}else{addrs.push({id:Date.now(),name,phone,detail});saveUserAddresses(currentUser,addrs);showTip('地址添加成功');}document.getElementById('newAddressName').value='';document.getElementById('newAddressPhone').value='';document.getElementById('newAddressDetail').value='';document.getElementById('addressModalTitle').innerText='收货地址管理';document.getElementById('addAddressBtn').innerText='保存地址';document.getElementById('cancelEditAddressBtn').style.display='none';errorDiv.style.display='none';renderAddressModal();if(document.getElementById('profileModal').style.display==='flex')renderProfile();}
+
+    function openBindCard(){document.getElementById('bindCardModal').style.display='flex';document.getElementById('cardNumber').value='';document.getElementById('cardHolder').value='';document.getElementById('cardExpiry').value='';document.getElementById('cardCvv').value='';document.getElementById('bindCardError').style.display='none';}
+    function closeBindCard(){document.getElementById('bindCardModal').style.display='none';}
+    function saveBankCard(){const number=document.getElementById('cardNumber').value.trim();const holder=document.getElementById('cardHolder').value.trim();const expiry=document.getElementById('cardExpiry').value.trim();const cvv=document.getElementById('cardCvv').value.trim();const errorDiv=document.getElementById('bindCardError');if(!number||number.length<16){errorDiv.textContent='请输入有效的16位卡号';errorDiv.style.display='block';return;}if(!holder){errorDiv.textContent='请输入持卡人姓名';errorDiv.style.display='block';return;}if(!expiry||!/^\d{2}\/\d{2}$/.test(expiry)){errorDiv.textContent='请输入有效期 (MM/YY)';errorDiv.style.display='block';return;}if(!cvv||cvv.length<3){errorDiv.textContent='请输入CVV码';errorDiv.style.display='block';return;}saveUserBankCard(currentUser,{number,holder,expiry,cvv});closeBindCard();showTip('银行卡绑定成功');if(document.getElementById('profileModal').style.display==='flex')renderProfile();if(document.getElementById('checkoutModal').style.display==='flex')updateBankCardCheck();}
+
+    let selectedAddressId=null,selectedCouponId=null,selectedPayment='wechat';
+    function updateBankCardCheck(){const card=getUserBankCard(currentUser);const checkDiv=document.getElementById('bankCardCheck');if(selectedPayment==='bankcard'){if(!card){checkDiv.style.display='block';}else{checkDiv.style.display='none';}}else{checkDiv.style.display='none';}}
+    async function openCheckoutModal(){if(!await requireLogin())return;const cart=getUserCart(currentUser);const entries=Object.entries(cart);if(entries.length===0){alert('购物车为空');return;}const addresses=getUserAddresses(currentUser);if(addresses.length===0){if(confirm('您还没有收货地址，是否前往添加？')){document.getElementById('addressModal').style.display='flex';renderAddressModal();}return;}selectedAddressId=addresses[0].id;selectedCouponId=null;selectedPayment='wechat';document.querySelectorAll('input[name="payment"]').forEach(r=>r.checked=false);document.querySelector('input[name="payment"][value="wechat"]').checked=true;document.querySelectorAll('.payment-options label').forEach(l=>l.classList.remove('selected'));document.querySelector('label:has(input[value="wechat"])')?.classList.add('selected');renderCheckoutModal();document.getElementById('checkoutModal').style.display='flex';updateBankCardCheck();}
+    function renderCheckoutModal(){if(!currentUser)return;const cart=getUserCart(currentUser);const entries=Object.entries(cart);const cartItems=entries.map(([key,qty])=>{const parts=key.split('_');const id=parseInt(parts[0]);const spec=parts[1]||'';const product=PRODUCTS.find(p=>p.id===id);return {id,quantity:qty,spec,price:product?product.price:0};});const addresses=getUserAddresses(currentUser);const addrContainer=document.getElementById('checkoutAddresses');addrContainer.innerHTML=`<h4>选择收货地址</h4>`+addresses.map(addr=>`<div class="address-item ${selectedAddressId===addr.id?'selected':''}" data-addr="${addr.id}"><strong>${escapeHtml(addr.name)}</strong> ${addr.phone}<br>${escapeHtml(addr.detail)}</div>`).join('');document.querySelectorAll('[data-addr]').forEach(el=>{el.addEventListener('click',()=>{selectedAddressId=parseInt(el.dataset.addr);renderCheckoutModal();});});
+        const availableCoupons=getAvailableCouponsForCart(currentUser,cartItems);const couponContainer=document.getElementById('checkoutCoupons');if(availableCoupons.length>0){couponContainer.innerHTML=`<h4>选择优惠券</h4>`+availableCoupons.map(c=>`<div class="coupon-item ${selectedCouponId===c.id?'selected':''}" data-coupon="${c.id}"><span>${escapeHtml(c.name)}</span><span style="font-size:0.8rem;color:#888;">${c.type==='折扣'?c.value+'%':(c.type==='满减'?'满'+c.threshold+'减'+c.value:'减'+c.value)}</span><span class="coupon-tag">可用</span></div>`).join('');document.querySelectorAll('[data-coupon]').forEach(el=>{el.addEventListener('click',()=>{const id=parseInt(el.dataset.coupon);selectedCouponId=(selectedCouponId===id)?null:id;renderCheckoutModal();});});}else{couponContainer.innerHTML=`<p style="color:#888;">暂无可用优惠券</p>`;}
+        let itemsHtml='<h4>商品明细</h4>';let originalTotal=0;for(const [key,qty] of entries){const parts=key.split('_');const pid=parseInt(parts[0]);const spec=parts[1]||'';const p=PRODUCTS.find(pr=>pr.id===pid);if(!p)continue;originalTotal+=p.price*qty;itemsHtml+=`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eee;"><span>${escapeHtml(p.name)} ${spec?'('+escapeHtml(spec)+')':''} × ${qty}</span><span>¥${(p.price*qty).toFixed(2)}</span></div>`;}document.getElementById('checkoutItems').innerHTML=itemsHtml;
+        let discount=0;if(selectedCouponId){const pool=getCouponPool();const coupon=pool.find(c=>c.id===selectedCouponId);if(coupon){const cartItemsForCalc=entries.map(([key,qty])=>{const parts=key.split('_');const id=parseInt(parts[0]);const product=PRODUCTS.find(p=>p.id===id);return {id,price:product?product.price:0,quantity:qty};});discount=applyCoupon(coupon,originalTotal,cartItemsForCalc);}}
+        const level=getLevel(currentUser);const levelDiscount=getLevelDiscount(level);const memberDiscount = originalTotal * (1 - levelDiscount/100);
+        const finalTotal = originalTotal - discount - memberDiscount;
+        document.getElementById('checkoutOriginalTotal').innerText=`¥${originalTotal.toFixed(2)}`;document.getElementById('checkoutDiscount').innerHTML=discount>0?`-¥${discount.toFixed(2)}`:'¥0.00';document.getElementById('checkoutFinalTotal').innerText=`¥${Math.max(finalTotal,0).toFixed(2)}`;}
+    document.querySelectorAll('input[name="payment"]').forEach(radio=>{radio.addEventListener('change',function(){document.querySelectorAll('.payment-options label').forEach(l=>l.classList.remove('selected'));if(this.checked){this.closest('label').classList.add('selected');selectedPayment=this.value;updateBankCardCheck();}});});
+    document.getElementById('gotoBindCard').addEventListener('click',(e)=>{e.preventDefault();if(!currentUser){showLoginModal();return;}openBindCard();});
+    async function submitOrder(){if(!await requireLogin())return;if(!selectedAddressId){alert('请选择收货地址');return;}if(selectedPayment==='bankcard'){const card=getUserBankCard(currentUser);if(!card){alert('请先绑定银行卡');document.getElementById('bankCardCheck').style.display='block';return;}}const cart=getUserCart(currentUser);const entries=Object.entries(cart);const cartItems=entries.map(([key,qty])=>{const parts=key.split('_');const id=parseInt(parts[0]);const spec=parts[1]||'';return {id,quantity:qty,spec};});const order=createOrder(selectedAddressId,selectedCouponId,selectedPayment,cartItems);if(order){document.getElementById('checkoutModal').style.display='none';renderCartView();renderOrdersView();showTip('订单已创建，请去支付');const orders=getUserOrders(currentUser);const newOrder=orders.find(o=>o.orderId===order.orderId);if(newOrder)showPaymentModal(newOrder);updateUserInfo();}}
+
+    let pendingOrder=null;
+    function showPaymentModal(order){if(order.status!=='pending'){alert('订单状态不允许支付');return;}pendingOrder=order;document.getElementById('paymentInfo').innerHTML=`<p><strong>订单号:</strong> ${order.orderId}</p><p><strong>商品:</strong> ${order.summary}</p><p><strong>应付金额:</strong> ¥${order.total.toFixed(2)}</p><p style="color:#888;font-size:0.8rem;">模拟支付，选择成功或失败</p>`;document.getElementById('paymentModal').style.display='flex';}
+    document.getElementById('paySuccessBtn').addEventListener('click',()=>{if(pendingOrder){const result=payOrder(pendingOrder.orderId,true);document.getElementById('paymentModal').style.display='none';if(result.success){renderOrdersView();showTip('支付成功！等待商家发货');updateUserInfo();}else{alert(result.msg);renderOrdersView();}pendingOrder=null;}});
+    document.getElementById('payFailBtn').addEventListener('click',()=>{if(pendingOrder){const result=payOrder(pendingOrder.orderId,false);document.getElementById('paymentModal').style.display='none';if(!result.success){alert(result.msg);renderOrdersView();}pendingOrder=null;}});
+    document.getElementById('cancelPayBtn').addEventListener('click',()=>{document.getElementById('paymentModal').style.display='none';pendingOrder=null;});
+
+    function initCategories(){const categories=['all',...new Set(PRODUCTS.map(p=>p.category))];const list=document.getElementById('categoryList');list.innerHTML=categories.map(cat=>`<li class="category-item ${currentCategory===cat?'active':''}" data-cat="${cat}">${cat==='all'?'全部商品':cat}</li>`).join('');document.querySelectorAll('.category-item').forEach(item=>{item.addEventListener('click',()=>{currentCategory=item.dataset.cat;renderProducts();initCategories();});});}
+
+    function initBanner(){const slides=document.querySelector('.banner-slides');const dots=document.getElementById('bannerDots');const total=slides.children.length;for(let i=0;i<total;i++){const dot=document.createElement('span');dot.className='banner-dot'+(i===0?' active':'');dot.dataset.index=i;dots.appendChild(dot);}function goTo(index){bannerIndex=index;slides.style.transform=`translateX(-${index*100}%)`;document.querySelectorAll('.banner-dot').forEach((d,i)=>{d.classList.toggle('active',i===index);});}dots.addEventListener('click',(e)=>{if(e.target.classList.contains('banner-dot')){const idx=parseInt(e.target.dataset.index);goTo(idx);resetBannerTimer();}});function nextSlide(){bannerIndex=(bannerIndex+1)%total;goTo(bannerIndex);}function resetBannerTimer(){if(bannerTimer){clearInterval(bannerTimer);bannerTimer=setInterval(nextSlide,4000);}}bannerTimer=setInterval(nextSlide,4000);}
+
+    // ===================================================================
+    // 初始化
+    // ===================================================================
+    function init(){
+        initStock();
+        if(!localStorage.getItem(STORAGE_COUPONS_POOL))saveCouponPool(DEFAULT_COUPONS);
+        // 初始化活动数据（秒杀示例）
+        if(!localStorage.getItem(STORAGE_PREFIX_ACTIVITIES)){
+            saveActivities([
+                {id:1,productId:3,name:'限时秒杀',discount:80,price:5599,endTime:new Date(Date.now()+7*24*60*60*1000).toISOString()},
+                {id:2,productId:5,name:'限时折扣',discount:85,price:5099,endTime:new Date(Date.now()+3*24*60*60*1000).toISOString()}
+            ]);
+        }
+
+        document.getElementById('loginBtn').addEventListener('click',showLoginModal);
+        document.getElementById('closeAuthBtn').addEventListener('click',hideLoginModal);
+        document.getElementById('authOverlay').addEventListener('click',hideLoginModal);
+        document.querySelectorAll('.auth-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const tabName=tab.dataset.tab;document.getElementById('loginForm').style.display=tabName==='login'?'block':'none';document.getElementById('registerForm').style.display=tabName==='register'?'block':'none';document.getElementById('loginError').innerText='';document.getElementById('regError').innerText='';});});
+        document.getElementById('doLoginBtn').addEventListener('click',()=>{const u=document.getElementById('loginUsername').value.trim();const p=document.getElementById('loginPassword').value;if(loginUser(u,p)){onLoginSuccess(u);}else{document.getElementById('loginError').innerText='用户名或密码错误';}});
+        document.getElementById('doRegisterBtn').addEventListener('click',()=>{const u=document.getElementById('regUsername').value.trim();const p=document.getElementById('regPassword').value;const cp=document.getElementById('regConfirmPwd').value;if(p!==cp){document.getElementById('regError').innerText='两次密码不一致';return;}const res=registerUser(u,p);if(res.success){if(loginUser(u,p)){onLoginSuccess(u);}else{alert('注册成功，请手动登录');}}else{document.getElementById('regError').innerText=res.msg;}});
+
+        document.getElementById('userProfile').addEventListener('click',toggleDropdown);
+        document.getElementById('profileBtn').addEventListener('click',(e)=>{e.preventDefault();openProfile();});
+        document.getElementById('couponCenterBtn').addEventListener('click',(e)=>{e.preventDefault();openCouponCenter();});
+        document.getElementById('msgCenterBtn').addEventListener('click',(e)=>{e.preventDefault();openMsgCenter();});
+        document.getElementById('adminEntryBtn').addEventListener('click',(e)=>{e.preventDefault();if(!currentUser){showLoginModal();return;}document.getElementById('adminPanel').style.display='block';renderAdmin();});
+        document.getElementById('logoutDropdownBtn').addEventListener('click',(e)=>{e.preventDefault();logoutUser();});
+
+        document.getElementById('closeProfileBtn').addEventListener('click',closeProfile);
+        document.getElementById('profileCloseBtn').addEventListener('click',closeProfile);
+        document.getElementById('profileModal').addEventListener('click',(e)=>{if(e.target===e.currentTarget)closeProfile();});
+        document.getElementById('profileAddAddrBtn').addEventListener('click',()=>{if(!currentUser){showLoginModal();return;}editingAddressId=null;document.getElementById('newAddressName').value='';document.getElementById('newAddressPhone').value='';document.getElementById('newAddressDetail').value='';document.getElementById('addressModalTitle').innerText='收货地址管理';document.getElementById('addAddressBtn').innerText='保存地址';document.getElementById('cancelEditAddressBtn').style.display='none';document.getElementById('addrError').style.display='none';document.getElementById('addressModal').style.display='flex';renderAddressModal();});
+        document.getElementById('profileBindCardBtn').addEventListener('click',()=>{if(!currentUser){showLoginModal();return;}openBindCard();});
+        document.getElementById('msgIcon').addEventListener('click',openMsgCenter);
+
+        document.getElementById('showCouponCenterBtn').addEventListener('click',openCouponCenter);
+        document.getElementById('closeCouponCenterBtn').addEventListener('click',closeCouponCenter);
+        document.getElementById('couponCenterModal').addEventListener('click',(e)=>{if(e.target===e.currentTarget)closeCouponCenter();});
+        document.getElementById('closeMsgCenterBtn').addEventListener('click',closeMsgCenter);
+        document.getElementById('msgCenterModal').addEventListener('click',(e)=>{if(e.target===e.currentTarget)closeMsgCenter();});
+
+        document.getElementById('showAddressBtn').addEventListener('click',async()=>{if(!await requireLogin())return;editingAddressId=null;document.getElementById('newAddressName').value='';document.getElementById('newAddressPhone').value='';document.getElementById('newAddressDetail').value='';document.getElementById('addressModalTitle').innerText='收货地址管理';document.getElementById('addAddressBtn').innerText='保存地址';document.getElementById('cancelEditAddressBtn').style.display='none';document.getElementById('addrError').style.display='none';document.getElementById('addressModal').style.display='flex';renderAddressModal();});
+        document.getElementById('addAddressBtn').addEventListener('click',saveAddress);
+        document.getElementById('cancelEditAddressBtn').addEventListener('click',cancelEditAddress);
+        document.getElementById('closeAddressBtn').addEventListener('click',()=>{document.getElementById('addressModal').style.display='none';cancelEditAddress();});
+
+        document.getElementById('closeBindCardBtn').addEventListener('click',closeBindCard);
+        document.getElementById('bindCardModal').addEventListener('click',(e)=>{if(e.target===e.currentTarget)closeBindCard();});
+        document.getElementById('saveCardBtn').addEventListener('click',saveBankCard);
+
+        document.getElementById('searchBtn').addEventListener('click',()=>{currentSearch=document.getElementById('searchInput').value.trim();renderProducts();});
+        document.getElementById('searchInput').addEventListener('keyup',(e)=>{if(e.key==='Enter'){currentSearch=e.target.value.trim();renderProducts();}});
+
+        document.getElementById('checkoutBtn').addEventListener('click',openCheckoutModal);
+        document.getElementById('submitOrderBtn').addEventListener('click',submitOrder);
+        document.getElementById('closeCheckoutBtn').addEventListener('click',()=>{document.getElementById('checkoutModal').style.display='none';});
+
+        document.getElementById('showCouponBtn').addEventListener('click',async()=>{if(!await requireLogin())return;const coupons=getUserClaimedCoupons(currentUser);if(coupons.length===0){alert('暂无优惠券，请前往领券中心领取');}else{let msg=coupons.map(c=>`${c.name} (${c.type} ${c.type==='折扣'?c.value+'%':(c.type==='满减'?'满'+c.threshold+'减'+c.value:'减'+c.value)}) 有效期至${c.expiry}`).join('\n');alert('我的优惠券:\n'+msg);}});
+        function getUserClaimedCoupons(u){const ids=getUserCouponIds(u);const pool=getCouponPool();return ids.map(id=>pool.find(c=>c.id===id)).filter(c=>c!==undefined);}
+
+        document.querySelectorAll('#ordersFilter .filter-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('#ordersFilter .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentOrderFilter=btn.dataset.status;renderOrdersView();});});
+
+        document.getElementById('closeModalBtn').addEventListener('click',()=>document.getElementById('productModal').style.display='none');
+        document.getElementById('closeOrderDetailBtn').addEventListener('click',()=>document.getElementById('orderDetailModal').style.display='none');
+        document.getElementById('closeAdminBtn').addEventListener('click',()=>document.getElementById('adminPanel').style.display='none');
+        document.querySelectorAll('.admin-tab').forEach(tab=>{tab.addEventListener('click',function(){document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');adminTab=this.dataset.tab;renderAdmin();});});
+        window.addEventListener('click',(e)=>{if(e.target.classList.contains('modal'))e.target.style.display='none';});
+
+        if(!localStorage.getItem(STORAGE_PREFIX_ADDRESS+'demo')){saveUserAddresses('demo',[{id:1001,name:'张三',phone:'13800000000',detail:'北京市朝阳区xxx路1号'}]);}
+        if(!localStorage.getItem(STORAGE_PREFIX_BANKCARD+'demo')){saveUserBankCard('demo',null);}
+        if(!localStorage.getItem(STORAGE_PREFIX_COUPONS+'demo')){saveUserCouponIds('demo',[1001,1003]);}
+
+        currentUser=null;
+        document.getElementById('currentUserSpan').innerText='未登录';
+        document.getElementById('loginBtn').style.display='inline-block';
+        document.getElementById('userProfile').style.display='flex';
+        initBanner();
+        initCategories();
+        renderProducts();
+        renderCartView();
+        renderOrdersView();
+        // 定时检查超时订单
+        setInterval(()=>{if(currentUser)checkTimeoutOrders();},30000);
+    }
+
+    init();
+</script>
+</body>
+</html>
